@@ -43,7 +43,7 @@ st.set_page_config(
     page_title="Nexora — Student Finance Assistant",
     page_icon="💳",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="auto",
 )
 
 # Custom Scoped CSS matching the Dribbble Nexora visual design brief:
@@ -376,6 +376,15 @@ if "selected_month" not in st.session_state:
     available_months = db.get_available_months()
     st.session_state.selected_month = available_months[0] if available_months else "2026-10"
 
+
+# Read query parameters for direct view/month navigation if present
+query_nav = st.query_params.get("nav")
+if query_nav and query_nav in ["Overview", "Transactions", "Budgets", "Category Review", "Model Evaluation"]:
+    st.session_state.active_nav = query_nav
+
+query_month = st.query_params.get("month")
+if query_month:
+    st.session_state.selected_month = query_month
 
 # -----------------------------------------------------------------------------
 # Sidebar Navigation & Actions

@@ -36,17 +36,17 @@
 - [x] Git checkpoint commit for Milestone 3
 
 ## Milestone 4: Verification, Browser Screen Captures & Visual Audit
-- [ ] Run Streamlit app in headless background mode
-- [ ] Verify HTTP 200 health response at `http://127.0.0.1:8501`
-- [ ] Use headless Chrome/Edge to capture real screenshots:
-  - [ ] Desktop dashboard (1440x1000) -> `docs/ui-implementation/desktop_dashboard.png`
-  - [ ] Mobile dashboard (390x844) -> `docs/ui-implementation/mobile_dashboard.png`
-  - [ ] Transactions view -> `docs/ui-implementation/transactions_view.png`
-  - [ ] Budgets view -> `docs/ui-implementation/budgets_view.png`
-  - [ ] Category review view -> `docs/ui-implementation/category_review_view.png`
-- [ ] Visually compare screenshots with `docs/ui-reference/reference.png` and tune CSS/visual details
-- [ ] Stop background test server
-- [ ] Git checkpoint commit for Milestone 4
+- [x] Run Streamlit app in headless background mode
+- [x] Verify HTTP 200 health response at `http://127.0.0.1:8501`
+- [x] Use headless Chrome/Edge to capture real screenshots:
+  - [x] Desktop dashboard (1440x1000) -> `docs/ui-implementation/desktop_dashboard.png`
+  - [x] Mobile dashboard (390x844) -> `docs/ui-implementation/mobile_dashboard.png`
+  - [x] Transactions view -> `docs/ui-implementation/transactions_view.png`
+  - [x] Budgets view -> `docs/ui-implementation/budgets_view.png`
+  - [x] Category review view -> `docs/ui-implementation/category_review_view.png`
+- [x] Visually compare screenshots with `docs/ui-reference/reference.png` and tune CSS/visual details
+- [x] Stop background test server
+- [x] Git checkpoint commit for Milestone 4
 
 ## Milestone 5: Quality Control, Reports & Documentation
 - [ ] Perform full code quality review (anti-patterns, security, performance, typing)
