@@ -1,15 +1,15 @@
 # Tasks List — Student Finance Assistant
 
 ## Milestone 1: Core Financial Backend & Storage Engine
-- [ ] Create `src/__init__.py` and `tests/__init__.py`
-- [ ] Implement `src/transactions.py` (Validation, Decimal -> Paise conversion, CSV parsing, SHA-256 fingerprinting)
-- [ ] Implement `src/storage.py` (SQLite connection, schema migration, transaction CRUD, budget CRUD, idempotent demo loader)
-- [ ] Implement `src/analytics.py` (Integer paise math, monthly aggregations, transfer exclusions, budget deltas, suggestions, safe CSV export)
-- [ ] Write unit tests: `tests/test_transactions.py`
-- [ ] Write unit tests: `tests/test_storage.py`
-- [ ] Write unit tests: `tests/test_analytics.py`
-- [ ] Run pytest to verify all Milestone 1 tests pass and exact demo totals match `EXPECTED_TOTALS.json`
-- [ ] Git checkpoint commit for Milestone 1
+- [x] Create `src/__init__.py` and `tests/__init__.py`
+- [x] Implement `src/transactions.py` (Validation, Decimal -> Paise conversion, CSV parsing, SHA-256 fingerprinting)
+- [x] Implement `src/storage.py` (SQLite connection, schema migration, transaction CRUD, budget CRUD, idempotent demo loader)
+- [x] Implement `src/analytics.py` (Integer paise math, monthly aggregations, transfer exclusions, budget deltas, suggestions, safe CSV export)
+- [x] Write unit tests: `tests/test_transactions.py`
+- [x] Write unit tests: `tests/test_storage.py`
+- [x] Write unit tests: `tests/test_analytics.py`
+- [x] Run pytest to verify all Milestone 1 tests pass and exact demo totals match `EXPECTED_TOTALS.json`
+- [x] Git checkpoint commit for Milestone 1
 
 ## Milestone 2: AI Categorizer & Evaluation Pipeline
 - [ ] Implement `src/categorizer.py` (TF-IDF + Logistic Regression, confidence score, OOV check, abstention mechanism)
