@@ -12,12 +12,12 @@
 - [x] Git checkpoint commit for Milestone 1
 
 ## Milestone 2: AI Categorizer & Evaluation Pipeline
-- [ ] Implement `src/categorizer.py` (TF-IDF + Logistic Regression, confidence score, OOV check, abstention mechanism)
-- [ ] Implement `scripts/evaluate_model.py` (Holdout evaluation, confusion matrix, JSON report output)
-- [ ] Write unit tests: `tests/test_categorizer.py`
-- [ ] Execute `scripts/evaluate_model.py` and generate `reports/model_evaluation.json`
-- [ ] Run pytest across all test suites
-- [ ] Git checkpoint commit for Milestone 2
+- [x] Implement `src/categorizer.py` (TF-IDF + Logistic Regression, confidence score, OOV check, abstention mechanism)
+- [x] Implement `scripts/evaluate_model.py` (Holdout evaluation, confusion matrix, JSON report output)
+- [x] Write unit tests: `tests/test_categorizer.py`
+- [x] Execute `scripts/evaluate_model.py` and generate `reports/model_evaluation.json`
+- [x] Run pytest across all test suites
+- [x] Git checkpoint commit for Milestone 2
 
 ## Milestone 3: High-Fidelity UI Implementation (Dribbble Nexora Theme)
 - [ ] Configure `.streamlit/config.toml` (Base theme, colors, font settings)
