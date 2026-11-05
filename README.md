@@ -1,6 +1,8 @@
-# Student Finance Assistant — AI for Finance CIA-2
+# SpendStory
 
-A local, privacy-first personal finance management application designed for university students. Track income, expenses, and category budgets in Indian Rupees (INR) with integer precision, explore explainable AI category suggestions with human-in-the-loop review, and enjoy a polished fintech interface matching the Dribbble "Nexora" Money Management Dashboard visual brief.
+SpendStory is an AI-assisted finance dashboard for students. Track income, expenses, and budgets in Indian rupees, explore spending by month, and review category suggestions from a local machine-learning model. Built for AI for Finance CIA-2.
+
+![SpendStory dashboard with fictional demo data](docs/ui-implementation/desktop_dashboard.png)
 
 ---
 
@@ -10,8 +12,8 @@ The user interface is modeled directly on the **Money Management Dashboard** des
 - **Quiet Left Sidebar (`#F8FAFD`)**: Wordmark branding, thin line navigation items with live review count badges, and an idempotent Fictional Demo action card.
 - **Four Financial Summary Cards**: Recorded Income, Recorded Expenses, Recorded Surplus, and Transfers Excluded.
 - **Asymmetric Visualization Layout**:
-  - *70/30 Row*: Truthful cumulative income/expense trend area chart beside an expense category doughnut chart with center total.
-  - *30/70 Row*: Category budgets progress list with overspend alerts beside a mirrored monthly comparison bar chart.
+  - *70/30 Row*: Cumulative income and expense trends beside an interactive category doughnut.
+  - *30/70 Row*: Budget progress beside monthly comparison bars. Select a bar to open that month.
 - **Interactive Views**: Overview, Transactions (with search & inline category editing), Budgets (target allocations & rebalancing suggestions), Category Review (AI abstention queue), and Model Evaluation (live transparency metrics).
 
 ---
@@ -46,7 +48,8 @@ From the project root:
 
 ### 1. Environment & Dependencies
 ```powershell
-# Activate or use existing Python 3.12 .venv
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-lock.txt
 .\.venv\Scripts\python.exe -m pip check
 ```
 
@@ -78,7 +81,7 @@ From the project root:
 
 ## Project Structure
 ```
-AI-For-Finance/
+SpendStory/
 ├── .streamlit/
 │   └── config.toml           # Streamlit theme & server configuration
 ├── data/
@@ -115,6 +118,9 @@ AI-For-Finance/
 │   ├── __init__.py
 │   ├── analytics.py          # Paise math, budget comparisons, safe CSV
 │   ├── categorizer.py        # ML pipeline, inference, abstention
+│   ├── dashboard_charts.py  # Interactive SVG chart component
+│   ├── dashboard_charts.js
+│   ├── dashboard_charts.css
 │   ├── storage.py            # SQLite schema, queries, idempotent import
 │   └── transactions.py       # Ingestion, validation, paise conversions
 ├── storage/
@@ -126,7 +132,7 @@ AI-For-Finance/
 │   ├── test_storage.py
 │   ├── test_transactions.py
 │   └── test_ui_smoke.py
-├── app.py                     # Streamlit Dribbble Nexora application
+├── app.py                     # SpendStory Streamlit application
 ├── ARCHITECTURE.md
 ├── AI_INSTRUCTIONS.md
 ├── PROJECT.md
@@ -141,4 +147,4 @@ AI-For-Finance/
 - **Fictional Data**: All sample transactions, merchants, and training data are synthetic.
 - **Model Scope**: Holdout evaluation measures performance on this tiny synthetic corpus (27.8% accuracy, 72.2% abstention rate). It does not claim production bank statement parity.
 - **Storage Security**: Local SQLite storage is plaintext; not encrypted at rest.
-- **Assistance**: Antigravity (Google DeepMind) provided pair-programming and scaffolding assistance under human engineering supervision.
+- **Assistance**: Antigravity helped scaffold the project. Codex implemented the current dashboard and verified its browser interactions.

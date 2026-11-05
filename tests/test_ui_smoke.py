@@ -11,29 +11,27 @@ def test_app_startup_and_render():
     at = AppTest.from_file(APP_PATH, default_timeout=30)
     at.run()
     assert not at.exception
-    # Verify Nexora branding is present
-    assert any("Nexora" in str(h.value) for h in at.html)
+    assert any("SpendStory" in str(h.value) for h in at.html)
 
 
 def test_app_navigation_and_views():
     at = AppTest.from_file(APP_PATH, default_timeout=30)
+    at.query_params.update(nav="Overview", month="2026-10")
     at.run()
     assert not at.exception
 
-    # Radio options: ["Overview", "Transactions", "Budgets", "Category Review...", "Model Evaluation"]
-    radio = at.sidebar.radio[0]
-    assert "Overview" in radio.options
+    for section in ("Transactions", "Budgets", "Category Review", "Model Evaluation", "Overview"):
+        at.sidebar.radio(key="active_nav").set_value(section).run()
+        assert not at.exception
+        assert any(f'>{section}</h1>' in item.value for item in at.html)
+        assert at.query_params["nav"] == section
 
-    # Switch to Transactions
-    radio.set_value("Transactions").run()
+    at.selectbox(key="selected_month").select("2026-11").run()
     assert not at.exception
+    assert at.query_params["month"] == "2026-11"
+    assert any("November 2026" in item.value for item in at.html)
 
-    # Switch to Budgets
-    radio = at.sidebar.radio[0]
-    radio.set_value("Budgets").run()
+    at.text_input(key="search_query").set_value("canteen").run()
     assert not at.exception
-
-    # Switch to Model Evaluation
-    radio = at.sidebar.radio[0]
-    radio.set_value("Model Evaluation").run()
-    assert not at.exception
+    assert at.sidebar.radio(key="active_nav").value == "Transactions"
+    assert at.query_params["nav"] == "Transactions"

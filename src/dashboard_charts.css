@@ -1,0 +1,99 @@
+.finance-chart {
+    position: relative;
+    min-width: 0;
+    color: #182354;
+    font-family: var(--st-font, system-ui, sans-serif);
+}
+
+.finance-chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.finance-chart .axis { fill: #606a85; font-size: 10px; font-variant-numeric: tabular-nums; }
+.finance-chart .grid { stroke: #ccd1de; stroke-width: 1; stroke-dasharray: 3 5; }
+.finance-chart .zero { stroke: #aab2c8; stroke-width: 1; }
+.finance-chart .plot-target { outline: none; cursor: crosshair; }
+.finance-chart .month-target { cursor: pointer; }
+.finance-chart .plot-target:focus-visible { stroke: #493bdb; stroke-width: 1.5; stroke-dasharray: 3 3; }
+.finance-chart .tip {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    max-width: calc(100% - 8px);
+    min-width: min(148px, calc(100% - 8px));
+    padding: 9px 11px;
+    color: #182354;
+    background: #fff;
+    border: 1px solid #e1e5f0;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px #23245b1a;
+    font-size: 11px;
+    pointer-events: none;
+}
+
+.finance-chart .tip-title { display: block; margin-bottom: 5px; color: #141c4a; font-weight: 750; }
+.finance-chart .tip:not([hidden]) { animation: tip-enter 140ms ease-out both; }
+.finance-chart .tip-row { display: flex; align-items: center; justify-content: space-between; gap: 13px; margin: 3px 0; }
+.finance-chart .tip-row span { display: flex; align-items: center; gap: 6px; color: #535e7a; }
+.finance-chart .tip-row strong { font-weight: 700; font-variant-numeric: tabular-nums; }
+.finance-chart .swatch { display: inline-block; width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%; }
+.finance-chart .chart-key { display: flex; justify-content: center; flex-wrap: wrap; gap: 5px 13px; color: #465173; font-size: 10px; }
+.finance-chart .chart-key span { display: inline-flex; align-items: center; gap: 5px; }
+.finance-chart .key-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 22px;
+    padding: 1px 4px;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: 4px;
+    font: inherit;
+    cursor: pointer;
+}
+
+.finance-chart .key-button:hover,
+.finance-chart .key-button[aria-pressed="true"] { background: #e8e5ff; color: #191c50; }
+.finance-chart .key-button:focus-visible { outline: 2px solid #493bdb; outline-offset: 1px; }
+.finance-chart .donut-slice {
+    cursor: pointer;
+    transition: opacity 180ms ease, stroke-width 180ms ease;
+}
+
+.finance-chart .donut-slice.active { stroke-width: 31; }
+.finance-chart .donut-slice.muted { opacity: .25; }
+.finance-chart .donut-value { fill: #182354; font-weight: 800; font-variant-numeric: tabular-nums; }
+.finance-chart .donut-label { fill: #56607c; font-size: 10px; }
+.finance-chart .callout { fill: #263150; font-weight: 650; font-size: 10px; }
+.finance-chart .reveal-x {
+    transform-box: fill-box;
+    transform-origin: left;
+    animation: reveal-x 550ms cubic-bezier(.22,.7,.2,1) both;
+}
+
+.finance-chart .reveal-ring {
+    stroke-dasharray: 100 100;
+    stroke-dashoffset: 0;
+    animation: reveal-ring 620ms cubic-bezier(.22,.7,.2,1) both;
+}
+
+.finance-chart .bar {
+    transform-origin: var(--baseline);
+    animation: grow 490ms cubic-bezier(.22,.7,.2,1) both;
+    animation-delay: var(--delay);
+}
+
+.finance-chart .water { animation: water 2.9s ease-in-out infinite alternate; }
+.finance-chart .empty { color: #606a85; font-size: 12px; text-align: center; padding: 44px 8px; }
+.finance-chart .chart-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+@keyframes reveal-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes reveal-ring { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+@keyframes grow { from { transform: scaleY(.001); } to { transform: scaleY(1); } }
+@keyframes water { from { transform: translateX(-2px); } to { transform: translateX(2px); } }
+@keyframes tip-enter { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+    .finance-chart *, .finance-chart *::before, .finance-chart *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

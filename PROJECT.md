@@ -1,4 +1,4 @@
-# Student Finance Assistant — Project Specification & Discovery
+# SpendStory — Project Specification & Discovery
 
 ## Problem
 University students and young adults frequently struggle to maintain financial discipline and understand their monthly cash outflow. Existing solutions often suffer from critical issues:

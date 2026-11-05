@@ -1,4 +1,4 @@
-# Five-Minute Presentation & Demo Script
+# SpendStory — Five-Minute Demo
 
 Follow this script step-by-step during your project demonstration.
 
@@ -12,10 +12,8 @@ Follow this script step-by-step during your project demonstration.
 
 ---
 
-### Step 2: Dribbble Nexora UI Walkthrough & October Totals (0:45 – 1:45)
-- Point out the visual fidelity to the Dribbble "Nexora" Money Management Dashboard brief:
-  - Pale lavender backdrop (`#E2E7F5`), 28px rounded white application shell.
-  - Quiet pale-gray sidebar with Nexora wordmark and dynamic review badges.
+### Step 2: Overview and October Totals (0:45 – 1:45)
+- Point out the lavender frame and the SpendStory sidebar with its category review count.
   - Four equal summary cards across one row.
 - In the top toolbar, ensure **October 2026** is selected.
 - Show the exact totals matching `EXPECTED_TOTALS.json`:

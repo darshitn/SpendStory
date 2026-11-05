@@ -1,7 +1,6 @@
-"""Student Finance Assistant — Personal Money Management Dashboard.
+"""SpendStory — AI-assisted student finance dashboard.
 
-Visual design adheres strictly to the Dribbble 'Nexora' Money Management Dashboard
-(ILmix Studio / Atiqur Rahman) visual brief in handoff/DRIBBBLE_UI_PROMPT.md.
+Visual direction: Money Management Dashboard by Atiqur Rahman for ILmix Studio.
 """
 
 from __future__ import annotations
@@ -9,15 +8,13 @@ from __future__ import annotations
 from datetime import date, datetime
 import html
 import json
+import os
 from pathlib import Path
-from typing import Optional
 
-import altair as alt
 import pandas as pd
 import streamlit as st
 
 from src.analytics import (
-    BudgetComparison,
     calculate_budget_comparisons,
     calculate_cumulative_trend,
     calculate_monthly_summary,
@@ -26,6 +23,7 @@ from src.analytics import (
     format_inr,
 )
 from src.categorizer import DEFAULT_CONFIDENCE_THRESHOLD, get_default_categorizer
+from src.dashboard_charts import render_donut, render_monthly, render_trend
 from src.storage import Database, ImportResult
 from src.transactions import (
     ALLOWED_EXPENSE_CATEGORIES,
@@ -36,11 +34,12 @@ from src.transactions import (
     validate_transaction_row,
 )
 
+
 # -----------------------------------------------------------------------------
 # Configuration & Theme Setup
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Nexora — Student Finance Assistant",
+    page_title="SpendStory — Student Finance Dashboard",
     page_icon="💳",
     layout="wide",
     initial_sidebar_state="auto",
@@ -53,21 +52,9 @@ NEXORA_CSS = """
 <style>
 /* Root styling and Pale Lavender backdrop */
 .stApp {
-    background-color: #E2E7F5 !important;
+    background: linear-gradient(161deg, #d7def8 7%, #dedcf8 53%, #e8d1f3 100%) !important;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     color: #14182D;
-}
-
-/* Rounded white application shell */
-.main .block-container {
-    max-width: 1400px !important;
-    padding: 24px 32px 40px 32px !important;
-    background-color: #FFFFFF !important;
-    border-radius: 28px !important;
-    box-shadow: 0 16px 48px -12px rgba(20, 24, 45, 0.08) !important;
-    border: 1px solid rgba(178, 188, 226, 0.45) !important;
-    margin-top: 16px !important;
-    margin-bottom: 24px !important;
 }
 
 /* Sidebar styling: Quiet pale gray */
@@ -85,12 +72,12 @@ NEXORA_CSS = """
     margin-top: 0 !important;
 }
 
-/* Nexora Wordmark branding */
+/* SpendStory wordmark */
 .nexora-logo {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 22px;
+    font-size: 19px;
     font-weight: 800;
     color: #14182D;
     letter-spacing: -0.5px;
@@ -98,17 +85,6 @@ NEXORA_CSS = """
     padding-left: 6px;
 }
 
-.nexora-logo-icon {
-    width: 28px;
-    height: 28px;
-    background: linear-gradient(135deg, #373EDC 0%, #993FC5 100%);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 14px;
-}
 
 /* Sidebar Navigation Items */
 .stRadio > div {
@@ -130,14 +106,6 @@ NEXORA_CSS = """
 }
 
 /* Top Toolbar */
-.top-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 16px;
-    margin-bottom: 8px;
-    border-bottom: 1px solid #F1F4FA;
-}
 
 .view-title {
     font-size: 20px;
@@ -190,7 +158,7 @@ NEXORA_CSS = """
 .metric-label {
     font-size: 12px;
     font-weight: 600;
-    color: #7A8499;
+    color: #202967;
     text-transform: capitalize;
     letter-spacing: 0.2px;
 }
@@ -198,7 +166,7 @@ NEXORA_CSS = """
 .metric-figure {
     font-size: 26px;
     font-weight: 700;
-    color: #14182D;
+    color: #182263;
     letter-spacing: -0.6px;
     font-variant-numeric: tabular-nums;
     margin: 6px 0 2px 0;
@@ -211,6 +179,8 @@ NEXORA_CSS = """
     display: flex;
     align-items: center;
     gap: 4px;
+    border-top: 1px solid #e3e7ed;
+    padding-top: 6px;
 }
 
 .metric-badge.green {
@@ -225,16 +195,7 @@ NEXORA_CSS = """
     color: #373EDC;
 }
 
-/* Visualization Panel Cards */
-.panel-card {
-    background-color: #FFFFFF;
-    border: 1px solid #EAEFF7;
-    border-radius: 18px;
-    padding: 22px 24px;
-    height: 100%;
-    box-shadow: 0 4px 16px rgba(20, 24, 45, 0.02);
-}
-
+/* Chart panel headings */
 .panel-header {
     display: flex;
     align-items: center;
@@ -250,25 +211,9 @@ NEXORA_CSS = """
     margin: 0;
 }
 
-.panel-action {
-    color: #8E95A9;
-    font-size: 12px;
-    cursor: pointer;
-}
 
 /* Category Budget Row */
-.budget-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-}
 
-.budget-cat-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: #14182D;
-}
 
 .budget-progress-track {
     width: 100%;
@@ -346,6 +291,129 @@ NEXORA_CSS = """
     line-height: 1.4;
     margin-bottom: 12px;
 }
+
+/* Streamlit 1.66: the app view is the common parent of sidebar and main. */
+@media (min-width: 901px) {
+  [data-testid="stAppViewContainer"] {
+    --frame-gutter: clamp(20px, 2.2vw, 42px);
+    --frame-top: clamp(18px, 2.8vh, 32px);
+    --rail: clamp(166px, 13.4vw, 222px);
+    margin: var(--frame-top) auto !important;
+    height: calc(100dvh - 2 * var(--frame-top)) !important;
+    min-height: 0 !important;
+    width: calc(100% - 2 * var(--frame-gutter)) !important;
+    border: 1px solid white; border-radius: 23px;
+    overflow: hidden; background: white !important;
+    box-shadow: 0 0 0 11px rgba(255,255,255,.36), 0 0 0 12px rgba(255,255,255,.82), 0 22px 50px rgba(82,53,151,.14);
+  }
+  [data-testid="stSidebar"] { width: var(--rail) !important; min-width: var(--rail) !important; max-width: var(--rail) !important; }
+  [data-testid="stSidebar"] > div:first-child { width: var(--rail) !important; }
+  [data-testid="stSidebarHeader"] { display: none !important; }
+  [data-testid="stSidebar"] [data-testid="stSidebarContent"],
+  [data-testid="stSidebar"] [data-testid="stSidebarUserContent"] { height: 100% !important; min-height: 0 !important; }
+  [data-testid="stMain"] {
+    height: calc(100dvh - 2 * var(--frame-top) - 2px) !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+  }
+  [data-testid="stSidebar"] [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .sidebar-spacer) {
+    min-height: calc(100dvh - 2 * var(--frame-top) - 16px);
+  }
+}
+[data-testid="stHeader"] { background: transparent !important; height: 0 !important; }
+[data-testid="stToolbar"], [data-testid="stAppDeployButton"] { display: none !important; }
+[data-testid="stMain"] { background: white !important; }
+[data-testid="stMainBlockContainer"] { max-width: none !important; padding: 0 14px 16px !important; }
+[data-testid="stSidebar"] { padding-top: 0 !important; background: #f3f6f8 !important; }
+[data-testid="stSidebar"] [data-testid="stSidebarContent"] { padding: 0 !important; }
+[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] { padding: 0 13px 14px !important; min-height: 100%; }
+[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] > [data-testid="stVerticalBlock"] { min-height: 100%; }
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] > [data-testid="stElementContainer"]:has(.sidebar-spacer) { flex: 1; min-height: 12px; }
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap: .55rem !important; }
+[data-testid="stSidebar"] .stRadio [role="radiogroup"] { gap: 3px !important; }
+[data-testid="stSidebar"] .stRadio label { padding: 8px 10px !important; width: 100%; }
+[data-testid="stSidebar"] .stRadio label:has(input:checked) { background: #e9eafd; color: #3029c5 !important; }
+[data-testid="stRadioOption"] > div > div:first-child { display: none; }
+[data-testid="stSidebar"] .stRadio label:focus-within { outline: 2px solid #373edc; outline-offset: 2px; }
+[data-testid="stSidebar"] .stRadio label p { display: flex; align-items: center; gap: 9px; font-size: 13px; }
+[data-testid="stSidebar"] .stRadio label p::before {
+  content: ''; flex: 0 0 16px; height: 16px; background: currentColor;
+  mask: var(--nav-icon) center / contain no-repeat;
+}
+[data-testid="stSidebar"] .stRadio [role="radiogroup"] > :nth-child(1) { --nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='m12 12 4-4M7 15a6 6 0 0 1 6-9m4 4a6 6 0 0 1 0 5'/%3E%3C/svg%3E"); }
+[data-testid="stSidebar"] .stRadio [role="radiogroup"] > :nth-child(2) { --nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8'%3E%3Crect x='3' y='5' width='18' height='14' rx='2'/%3E%3Cpath d='M3 9h18m-14 5h4'/%3E%3C/svg%3E"); }
+[data-testid="stSidebar"] .stRadio [role="radiogroup"] > :nth-child(3) { --nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8'%3E%3Cpath d='M4 8h16v12H4zM7 8V4h10v4M9 13h6m-6 3h4'/%3E%3C/svg%3E"); }
+[data-testid="stSidebar"] .stRadio [role="radiogroup"] > :nth-child(4) { --nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8'%3E%3Cpath d='M3 5h9l9 9-7 7-9-9z'/%3E%3Ccircle cx='8' cy='9' r='1'/%3E%3C/svg%3E"); }
+[data-testid="stSidebar"] .stRadio [role="radiogroup"] > :nth-child(5) { --nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8'%3E%3Cpath d='M4 4v16h16M8 16v-4m5 4V8m5 8V5'/%3E%3C/svg%3E"); }
+[data-testid="stMain"] [data-testid="stVerticalBlock"] { gap: .65rem; }
+:is(.st-key-dashboard_trend, .st-key-dashboard_breakdown, .st-key-dashboard_budgets, .st-key-dashboard_comparison) {
+  background: #f3f5f7; border: 1px solid #edf0f4; border-radius: 10px; padding: 12px !important;
+}
+.trend-surplus { line-height: 1.2; margin-top: 4px; color: #182263; font-size: 28px; font-weight: 750; letter-spacing: -.7px; }
+.chart-period { color: #586889; font-size: 10.5px; text-align: right; }
+@media (min-width: 901px) {
+  .st-key-dashboard_trend, .st-key-dashboard_breakdown { min-height: 314px; }
+  .st-key-dashboard_budgets, .st-key-dashboard_comparison { min-height: 275px; }
+}
+[data-testid="stMain"] [data-testid="stHorizontalBlock"] { gap: 12px; }
+.nexora-logo { height: 48px; padding: 0; margin: 0; border-bottom: 1px solid #e5e9ef; }
+.st-key-dashboard_demo {
+  background: linear-gradient(160deg, #e6e6f8, #efedfa);
+  padding: 10px !important;
+  border: 1px solid #e1def4;
+  border-radius: 9px;
+}
+.st-key-dashboard_demo .sidebar-promo-card { margin: 0; padding: 0; text-align: center; background: transparent; border: 0; }
+.st-key-dashboard_demo .sidebar-promo-desc { margin: 0; }
+.st-key-dashboard_demo [data-testid="stExpander"] { background: #fff; border-radius: 8px; }
+.st-key-dashboard_demo [data-testid="stExpander"] summary { padding: 5px 8px; }
+.greeting-header { font-size: 18px; color: #182263; }
+.greeting-subtext { margin-bottom: 2px; color: #586889; font-size: 12px; }
+.metric-card { height: 108px; padding: 12px 13px; border-radius: 9px; background: #f3f5f7; }
+.metric-figure { font-size: clamp(17px, 1.75vw, 27px); }
+.panel-header { margin: 0; }
+.panel-title { font-size: 13px; color: #182263; }
+.st-key-dashboard_toolbar { padding: 6px 0; border-bottom: 1px solid #e8ebf0; }
+@media (min-width: 901px) {
+  [data-testid="stLayoutWrapper"]:has(> .st-key-dashboard_toolbar) {
+    position: sticky; top: 0; z-index: 5; background: #fff;
+  }
+}
+.st-key-dashboard_toolbar .view-title { font-size: 17px; }
+.st-key-dashboard_toolbar button { min-height: 33px; padding: 4px 9px; }
+.budget-preview { display: grid; gap: 6px; }
+.budget-preview-item { padding: 6px 9px; background: white; border-radius: 7px; }
+.budget-preview-label { display: flex; align-items: center; gap: 7px; color: #202967; font-size: 11px; font-weight: 650; }
+.budget-preview-label small { margin-left: auto; text-align: right; color: #526283; font-size: 10px; }
+.budget-dot { display: inline-grid; place-items: center; flex: 0 0 18px; height: 18px; border-radius: 50%; color: white; font-size: 10px; }
+.budget-progress-track { height: 4px; background: #e7e4f8; }
+.budget-progress-fill { transform-origin: left; animation: budget-grow .55s ease-out both; }
+@keyframes budget-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.metric-figure { animation: value-enter .28s cubic-bezier(.2,.7,.2,1) both; }
+.st-key-dashboard_metrics [data-testid="stColumn"]:nth-child(2) .metric-figure { animation-delay: 35ms; }
+.st-key-dashboard_metrics [data-testid="stColumn"]:nth-child(3) .metric-figure { animation-delay: 70ms; }
+.st-key-dashboard_metrics [data-testid="stColumn"]:nth-child(4) .metric-figure { animation-delay: 105ms; }
+@keyframes value-enter { from { opacity: .4; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .budget-progress-fill, .metric-card, .metric-figure, .stButton > button { animation: none !important; transition: none !important; }
+}
+@media (max-width: 900px) {
+  [data-testid="stMain"] { background: white !important; }
+  [data-testid="stMainBlockContainer"] { padding: 47px 12px 24px !important; }
+  [data-testid="stHeader"] { height: 48px !important; background: white !important; }
+  [data-testid="stToolbar"] { display: flex !important; }
+  [data-testid="stMain"] [data-testid="stHorizontalBlock"] { gap: 10px; }
+}
+@media (max-width: 640px) {
+  .st-key-dashboard_metrics [data-testid="stHorizontalBlock"],
+  .st-key-dashboard_toolbar [data-testid="stHorizontalBlock"] { display: grid !important; grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .st-key-dashboard_metrics [data-testid="stColumn"],
+  .st-key-dashboard_toolbar [data-testid="stColumn"] { width: 100% !important; min-width: 0 !important; }
+  .st-key-dashboard_toolbar [data-testid="stColumn"]:first-child { grid-column: 1 / -1; }
+  .metric-card { height: 100px; }
+  .metric-figure { font-size: 19px; }
+}
+
 </style>
 """
 st.html(NEXORA_CSS)
@@ -356,46 +424,39 @@ st.html(NEXORA_CSS)
 # -----------------------------------------------------------------------------
 @st.cache_resource
 def get_database() -> Database:
-    return Database("storage/finance.db")
+    return Database(os.environ.get("FINANCE_DB_PATH", "storage/finance.db"))
 
 
 db = get_database()
 categorizer = get_default_categorizer()
 
-# Initialize session state variables
-if "active_nav" not in st.session_state:
-    st.session_state.active_nav = "Overview"
+NAV_OPTIONS = ("Overview", "Transactions", "Budgets", "Category Review", "Model Evaluation")
+available_months = db.get_available_months() or ["2026-10", "2026-11"]
 
-if "search_query" not in st.session_state:
-    st.session_state.search_query = ""
-
-if "confirm_reset" not in st.session_state:
-    st.session_state.confirm_reset = False
-
-if "selected_month" not in st.session_state:
-    available_months = db.get_available_months()
-    st.session_state.selected_month = available_months[0] if available_months else "2026-10"
-
-
-# Read query parameters for direct view/month navigation if present
+# A direct link initializes the widgets. Their keyed values own subsequent changes.
 query_nav = st.query_params.get("nav")
-if query_nav and query_nav in ["Overview", "Transactions", "Budgets", "Category Review", "Model Evaluation"]:
-    st.session_state.active_nav = query_nav
-
 query_month = st.query_params.get("month")
-if query_month:
-    st.session_state.selected_month = query_month
+st.session_state.setdefault("active_nav", query_nav if query_nav in NAV_OPTIONS else "Overview")
+st.session_state.setdefault("selected_month", query_month if query_month in available_months else available_months[0])
+st.session_state.setdefault("search_query", "")
+
+if st.session_state.selected_month not in available_months:
+    st.session_state.selected_month = available_months[0]
+
+
+def open_search_results() -> None:
+    if st.session_state.search_query.strip():
+        st.session_state.active_nav = "Transactions"
 
 # -----------------------------------------------------------------------------
 # Sidebar Navigation & Actions
 # -----------------------------------------------------------------------------
 with st.sidebar:
-    # Nexora Wordmark
+    # SpendStory wordmark
     st.html(
         """
         <div class="nexora-logo">
-            <div class="nexora-logo-icon">✦</div>
-            <span>Nexora</span>
+            <span>SpendStory</span>
         </div>
         """
     )
@@ -404,118 +465,88 @@ with st.sidebar:
     unreviewed_items = db.get_transactions(review_status="needs_review")
     review_label = f"Category Review ({len(unreviewed_items)})" if unreviewed_items else "Category Review"
 
-    nav_options = [
-        "Overview",
-        "Transactions",
-        "Budgets",
-        review_label,
-        "Model Evaluation",
-    ]
-
-    selected_nav = st.radio(
+    st.radio(
         "Navigation",
-        options=nav_options,
-        index=0 if st.session_state.active_nav == "Overview" else (
-            1 if st.session_state.active_nav == "Transactions" else (
-                2 if st.session_state.active_nav == "Budgets" else (
-                    3 if "Category Review" in st.session_state.active_nav else 4
-                )
-            )
-        ),
+        options=NAV_OPTIONS,
+        key="active_nav",
+        format_func=lambda section: review_label if section == "Category Review" else section,
         label_visibility="collapsed",
     )
 
-    # Normalize active nav name
-    if "Category Review" in selected_nav:
-        st.session_state.active_nav = "Category Review"
-    else:
-        st.session_state.active_nav = selected_nav
+    st.html('<div class="sidebar-spacer" aria-hidden="true"></div>')
 
-    st.divider()
-
-    # Sidebar Action Card (Replacing 'Upgrade to Pro' with Fictional Demo loader)
-    st.html(
-        """
-        <div class="sidebar-promo-card">
-            <div class="sidebar-promo-title">Fictional Demo</div>
-            <div class="sidebar-promo-desc">
-                Load verified student dataset with Oct & Nov 2026 totals and budget baselines.
+    with st.container(key="dashboard_demo"):
+        # Sidebar Action Card (Replacing 'Upgrade to Pro' with Fictional Demo loader)
+        st.html(
+            """
+            <div class="sidebar-promo-card">
+                <div class="sidebar-promo-title">Fictional Demo</div>
+                <div class="sidebar-promo-desc">
+                    Explore the dashboard with sample spending and budgets.
+                </div>
             </div>
-        </div>
-        """
-    )
+            """
+        )
 
-    if st.button("Load Fictional Demo", type="primary", width="stretch"):
-        res = db.load_demo_data("data/demo/transactions.csv")
-        st.session_state.selected_month = "2026-10"
-        st.toast(f"Demo loaded! Inserted: {res.inserted}, Skipped: {res.skipped}")
-        st.rerun()
-
-    st.write("")
-    with st.expander("Reset / Clear Data"):
-        st.caption("Erase local transactions and budgets stored in SQLite.")
-        confirm = st.checkbox("I confirm clearing all data", key="clear_confirm_cb")
-        if st.button("Clear All Data", type="secondary", disabled=not confirm, width="stretch"):
-            db.clear_all_data()
-            st.toast("Local data cleared successfully.")
+        if st.button("Load Fictional Demo", type="primary", width="stretch"):
+            res = db.load_demo_data("data/demo/transactions.csv")
+            st.session_state.selected_month = "2026-10"
+            st.toast(f"Demo loaded! Inserted: {res.inserted}, Skipped: {res.skipped}")
             st.rerun()
+
+        with st.expander("Reset / Clear Data"):
+            st.caption("Erase local transactions and budgets stored in SQLite.")
+            confirm = st.checkbox("I confirm clearing all data", key="clear_confirm_cb")
+            if st.button("Clear All Data", type="secondary", disabled=not confirm, width="stretch"):
+                db.clear_all_data()
+                st.toast("Local data cleared successfully.")
+                st.rerun()
 
 
 # -----------------------------------------------------------------------------
 # Global Top Toolbar
 # -----------------------------------------------------------------------------
-available_months = db.get_available_months()
-if not available_months:
-    available_months = ["2026-10", "2026-11"]
+with st.container(key="dashboard_toolbar"):
+    toolbar_cols = st.columns([2.6, 2, 1.8, 1.1, 1.1], vertical_alignment="center")
 
-if st.session_state.selected_month not in available_months:
-    st.session_state.selected_month = available_months[0]
+    with toolbar_cols[0]:
+        st.html(f'<h1 class="view-title">{st.session_state.active_nav}</h1>')
 
-toolbar_cols = st.columns([3, 2, 2, 1.2, 1.2])
+    with toolbar_cols[1]:
+        st.text_input(
+            "Search",
+            key="search_query",
+            placeholder="Search transactions",
+            label_visibility="collapsed",
+            on_change=open_search_results,
+        )
 
-with toolbar_cols[0]:
-    st.html(f'<h1 class="view-title">{st.session_state.active_nav}</h1>')
+    with toolbar_cols[2]:
+        st.selectbox(
+            "Month",
+            options=available_months,
+            key="selected_month",
+            format_func=lambda ym: datetime.strptime(ym, "%Y-%m").strftime("%B %Y"),
+            label_visibility="collapsed",
+        )
 
-with toolbar_cols[1]:
-    search_input = st.text_input(
-        "Search",
-        value=st.session_state.search_query,
-        placeholder="🔍 Search transactions...",
-        label_visibility="collapsed",
-    )
-    if search_input != st.session_state.search_query:
-        st.session_state.search_query = search_input
-        if search_input and st.session_state.active_nav == "Overview":
-            st.session_state.active_nav = "Transactions"
-        st.rerun()
+    all_txs_for_month = db.get_transactions(year_month=st.session_state.selected_month)
 
-with toolbar_cols[2]:
-    selected_month_choice = st.selectbox(
-        "Month",
-        options=available_months,
-        index=available_months.index(st.session_state.selected_month) if st.session_state.selected_month in available_months else 0,
-        format_func=lambda ym: datetime.strptime(ym, "%Y-%m").strftime("%B %Y") if ym else ym,
-        label_visibility="collapsed",
-    )
-    if selected_month_choice != st.session_state.selected_month:
-        st.session_state.selected_month = selected_month_choice
-        st.rerun()
+    with toolbar_cols[3]:
+        csv_bytes = export_transactions_to_csv(all_txs_for_month).encode("utf-8")
+        st.download_button(
+            label="Export CSV",
+            data=csv_bytes,
+            file_name=f"transactions_{st.session_state.selected_month}.csv",
+            mime="text/csv",
+            width="stretch",
+        )
 
-all_txs_for_month = db.get_transactions(year_month=st.session_state.selected_month)
+    with toolbar_cols[4]:
+        show_import_dialog = st.button("Import CSV", width="stretch")
 
-with toolbar_cols[3]:
-    csv_bytes = export_transactions_to_csv(all_txs_for_month).encode("utf-8")
-    st.download_button(
-        label="Export CSV",
-        data=csv_bytes,
-        file_name=f"transactions_{st.session_state.selected_month}.csv",
-        mime="text/csv",
-        width="stretch",
-    )
-
-with toolbar_cols[4]:
-    show_import_dialog = st.button("Import CSV", width="stretch")
-
+if query_nav != st.session_state.active_nav or query_month != st.session_state.selected_month:
+    st.query_params.update(nav=st.session_state.active_nav, month=st.session_state.selected_month)
 
 # Optional CSV Import Staging Expander
 if show_import_dialog or st.session_state.get("show_import_panel", False):
@@ -586,345 +617,109 @@ if show_import_dialog or st.session_state.get("show_import_panel", False):
 # VIEW 1: OVERVIEW (Dribbble Nexora High-Fidelity Dashboard)
 # =============================================================================
 if st.session_state.active_nav == "Overview":
-    # Greeting Row
     month_name = datetime.strptime(st.session_state.selected_month, "%Y-%m").strftime("%B %Y")
     st.html(
-        f"""
-        <div class="greeting-header">Good Day, Student 👋</div>
-        <div class="greeting-subtext">Viewing financial summary and budget tracking for {month_name} • Fictional Demo Data</div>
-        """
+        f'''
+        <div class="greeting-header">Good day, Student 👋</div>
+        <div class="greeting-subtext">Your money overview · {month_name}</div>
+        '''
     )
 
-    # 1. Four Equal Summary Cards
     summary = calculate_monthly_summary(all_txs_for_month, st.session_state.selected_month)
-    surplus_class = "green" if summary.recorded_surplus_paise >= 0 else "purple"
-
-    metric_cols = st.columns(4)
-
-    with metric_cols[0]:
-        st.html(
-            f"""
-            <div class="metric-card">
-                <div class="metric-top-row">
-                    <span class="metric-label">Recorded Income</span>
-                    <span style="color:#A0AEC0; font-size:14px;">⋮</span>
-                </div>
-                <div class="metric-figure">{format_inr(summary.income_paise)}</div>
-                <div class="metric-badge green">↗ Active month allowance</div>
-            </div>
-            """
-        )
-
-    with metric_cols[1]:
-        st.html(
-            f"""
-            <div class="metric-card">
-                <div class="metric-top-row">
-                    <span class="metric-label">Recorded Expenses</span>
-                    <span style="color:#A0AEC0; font-size:14px;">⋮</span>
-                </div>
-                <div class="metric-figure">{format_inr(summary.expense_paise)}</div>
-                <div class="metric-badge purple">↘ Total outflow</div>
-            </div>
-            """
-        )
-
-    with metric_cols[2]:
-        st.html(
-            f"""
-            <div class="metric-card">
-                <div class="metric-top-row">
-                    <span class="metric-label">Recorded Surplus</span>
-                    <span style="color:#A0AEC0; font-size:14px;">⋮</span>
-                </div>
-                <div class="metric-figure">{format_inr(summary.recorded_surplus_paise)}</div>
-                <div class="metric-badge {surplus_class}">Income minus expenses</div>
-            </div>
-            """
-        )
-
-    with metric_cols[3]:
-        st.html(
-            f"""
-            <div class="metric-card">
-                <div class="metric-top-row">
-                    <span class="metric-label">Transfers Excluded</span>
-                    <span style="color:#A0AEC0; font-size:14px;">⋮</span>
-                </div>
-                <div class="metric-figure">{format_inr(summary.transfer_paise)}</div>
-                <div class="metric-badge blue">Internal account moves</div>
-            </div>
-            """
-        )
-
-    st.write("")
-
-    # 2. Main Visualization Row (70% Trend Chart / 30% Category Doughnut)
-    row1_left, row1_right = st.columns([6.8, 3.2])
-
-    with row1_left:
-        with st.container(border=True):
-            st.html(
-                f"""
-                <div class="panel-header">
-                    <div>
-                        <div class="panel-title">Cumulative Income & Expense Trend</div>
-                        <div style="font-size:22px; font-weight:700; color:#14182D; margin-top:4px;">
-                            {format_inr(summary.recorded_surplus_paise)}
-                            <span style="font-size:12px; font-weight:500; color:#0E9F6E; margin-left:6px;">Surplus</span>
-                        </div>
+    metrics = (
+        ("Recorded income", summary.income_paise, "Income this month", "green"),
+        ("Recorded expenses", summary.expense_paise, "Spending this month", "purple"),
+        ("Recorded surplus", summary.recorded_surplus_paise, "Income less expenses",
+         "green" if summary.recorded_surplus_paise >= 0 else "purple"),
+        ("Transfers excluded", summary.transfer_paise, "Moves between accounts", "blue"),
+    )
+    with st.container(key="dashboard_metrics"):
+        for column, (label, amount, caption, tone) in zip(st.columns(4), metrics):
+            with column:
+                st.html(
+                    f'''
+                    <div class="metric-card">
+                        <span class="metric-label">{label}</span>
+                        <div class="metric-figure">{format_inr(amount)}</div>
+                        <div class="metric-badge {tone}">{caption}</div>
                     </div>
-                    <span style="font-size:12px; color:#8E95A9;">Truthful dated timeline</span>
+                    '''
+                )
+
+    trend, breakdown = st.columns([7.15, 2.85])
+    with trend, st.container(key="dashboard_trend"):
+        st.html(
+            f'''
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Income &amp; expense trends</div>
+                    <div class="trend-surplus">{format_inr(summary.recorded_surplus_paise)}</div>
                 </div>
-                """
-            )
+                <span class="chart-period">Recorded surplus · {month_name}</span>
+            </div>
+            '''
+        )
+        trend_data = calculate_cumulative_trend(all_txs_for_month, st.session_state.selected_month)
+        if trend_data:
+            render_trend(trend_data, key="overview_trend")
+        else:
+            st.caption("Add transactions to see how your month is taking shape.")
 
-            trend_data = calculate_cumulative_trend(all_txs_for_month, st.session_state.selected_month)
-            if trend_data:
-                # Prepare melted dataframe for dual area Altair chart
-                df_trend = pd.DataFrame(trend_data)
-                df_melted = df_trend.melt(
-                    id_vars=["date", "label"],
-                    value_vars=["income_inr", "expense_inr"],
-                    var_name="Series",
-                    value_name="Amount",
-                )
-                df_melted["SeriesName"] = df_melted["Series"].map(
-                    {"income_inr": "Cumulative Income", "expense_inr": "Cumulative Expenses"}
-                )
+    with breakdown, st.container(key="dashboard_breakdown"):
+        st.html('<div class="panel-header"><span class="panel-title">Monthly expenses breakdown</span></div>')
+        donut_rows = [
+            {"Category": category, "Amount": paise / 100}
+            for category, paise in summary.expense_by_category_paise.items()
+            if paise > 0
+        ]
+        if donut_rows:
+            render_donut(donut_rows, key="overview_breakdown")
+        else:
+            st.caption("Your expense breakdown will appear here.")
 
-                # Altair custom chart with soft violet / indigo aesthetic
-                base = alt.Chart(df_melted).encode(
-                    x=alt.X("label:N", title=None, axis=alt.Axis(labelAngle=0, labelColor="#7A8499", gridColor="#F1F4FA")),
-                    y=alt.Y("Amount:Q", title="Amount (₹)", axis=alt.Axis(format="~s", labelColor="#7A8499", gridColor="#F1F4FA")),
-                    color=alt.Color(
-                        "SeriesName:N",
-                        scale=alt.Scale(domain=["Cumulative Income", "Cumulative Expenses"], range=["#373EDC", "#C026D3"]),
-                        legend=alt.Legend(orient="top", title=None, labelColor="#4A5568"),
-                    ),
-                )
-
-                # Line with subtle point marks and area translucency
-                area = base.mark_area(opacity=0.12, interpolate="monotone")
-                line = base.mark_line(strokeWidth=2.8, interpolate="monotone")
-                points = base.mark_circle(size=40, opacity=0.8)
-
-                chart_trend = (area + line + points).properties(height=260).interactive()
-                st.altair_chart(chart_trend, width="stretch")
-            else:
-                st.info("No recorded transactions found for this month.")
-
-    with row1_right:
-        with st.container(border=True):
-            st.html(
-                """
-                <div class="panel-header">
-                    <span class="panel-title">Monthly Expenses Breakdown</span>
-                    <span style="color:#A0AEC0; font-size:14px;">⋮</span>
-                </div>
-                """
-            )
-
-            if summary.expense_by_category_paise and summary.expense_paise > 0:
-                donut_rows = []
-                for cat, paise in summary.expense_by_category_paise.items():
-                    pct = round((paise / summary.expense_paise) * 100, 1)
-                    donut_rows.append({"Category": cat, "Amount": paise / 100.0, "Share": pct})
-
-                df_donut = pd.DataFrame(donut_rows)
-
-                # Dribbble violet/indigo/magenta color palette
-                palette = ["#993FC5", "#373EDC", "#B3B3F4", "#C7A7F0", "#38BDF8", "#F43F5E", "#10B981"]
-                donut_chart = (
-                    alt.Chart(df_donut)
-                    .mark_arc(innerRadius=62, outerRadius=95, stroke="#FFFFFF", strokeWidth=2)
-                    .encode(
-                        theta=alt.Theta("Amount:Q", title="Amount"),
-                        color=alt.Color("Category:N", scale=alt.Scale(range=palette), legend=None),
-                        tooltip=[
-                            alt.Tooltip("Category:N"),
-                            alt.Tooltip("Amount:Q", format=",.2f", title="Spent (₹)"),
-                            alt.Tooltip("Share:Q", format=".1f", title="Share (%)"),
-                        ],
-                    )
-                    .properties(height=200)
-                )
-
-                # Center text showing total expense
-                center_text = (
-                    alt.Chart(pd.DataFrame([{"text": format_inr(summary.expense_paise)}]))
-                    .mark_text(fontSize=16, fontWeight=700, color="#14182D")
-                    .encode(text="text:N")
-                )
-
-                st.altair_chart(donut_chart + center_text, width="stretch")
-
-                # Compact category legend
-                legend_cols = st.columns(2)
-                for idx, row in df_donut.iterrows():
-                    col_idx = idx % 2
-                    color = palette[idx % len(palette)]
-                    with legend_cols[col_idx]:
-                        st.html(
-                            f"""
-                            <div style="display:flex; align-items:center; gap:6px; font-size:11.5px; margin-bottom:4px;">
-                                <span style="width:8px; height:8px; border-radius:50%; background-color:{color};"></span>
-                                <span style="color:#4A5568; font-weight:500;">{row['Category']}</span>
-                                <span style="color:#7A8499; margin-left:auto;">{row['Share']:.0f}%</span>
-                            </div>
-                            """
-                        )
-            else:
-                st.caption("No recorded expenses for this period.")
-
-    st.write("")
-
-    # 3. Lower Visualization Row (30% Monthly Budgets / 70% Monthly Comparison)
-    row2_left, row2_right = st.columns([3.5, 6.5])
-
-    with row2_left:
-        with st.container(border=True):
-            st.html(
-                """
-                <div class="panel-header">
-                    <span class="panel-title">Monthly Budgets</span>
-                    <span style="color:#A0AEC0; font-size:14px;">⋮</span>
-                </div>
-                """
-            )
-
-            budgets_map = db.get_budgets(st.session_state.selected_month)
-            comparisons = calculate_budget_comparisons(summary.expense_by_category_paise, budgets_map)
-
-            # Category icons
-            cat_icons = {
-                "Food": "🍽️",
-                "Transport": "🚌",
-                "Shopping": "🛍️",
-                "Education": "🎓",
-                "Bills": "⚡",
-                "Entertainment": "🎬",
-                "Other": "📦",
-            }
-            track_colors = ["#10B981", "#373EDC", "#993FC5", "#F59E0B", "#38BDF8", "#EC4899", "#8B5CF6"]
-
-            if comparisons:
-                for idx, comp in enumerate(comparisons[:5]):
-                    icon = cat_icons.get(comp.category, "🏷️")
-                    color = track_colors[idx % len(track_colors)]
-                    pct = comp.percent_used if comp.percent_used is not None else 0.0
-                    capped_pct = min(pct, 100.0)
-
-                    status_html = ""
-                    if comp.budget_paise is None:
-                        status_html = '<span style="font-size:11px; color:#A0AEC0;">No budget set</span>'
-                    elif comp.is_over:
-                        status_html = f'<span style="font-size:11px; font-weight:700; color:#E02424;">+{format_inr(comp.delta_paise)} Over</span>'
-                    else:
-                        status_html = f'<span style="font-size:11px; font-weight:600; color:#0E9F6E;">{pct:.0f}%</span>'
-
-                    st.html(
-                        f"""
-                        <div style="margin-bottom:12px;">
-                            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:2px;">
-                                <div style="display:flex; align-items:center; gap:8px;">
-                                    <span style="font-size:14px;">{icon}</span>
-                                    <span style="font-size:13px; font-weight:600; color:#14182D;">{comp.category}</span>
-                                </div>
-                                <div style="text-align:right;">
-                                    <span style="font-size:12px; font-weight:600; color:#14182D;">{format_inr(comp.spent_paise)}</span>
-                                    {f'<span style="font-size:11px; color:#8E95A9;"> / {format_inr(comp.budget_paise)}</span>' if comp.budget_paise else ''}
-                                </div>
-                            </div>
-                            <div class="budget-progress-track">
-                                <div class="budget-progress-fill" style="width:{capped_pct}%; background-color:{color};"></div>
-                            </div>
-                            <div style="margin-top:2px; display:flex; justify-content:space-between;">
-                                <span style="font-size:10.5px; color:#8E95A9;">{comp.suggestion or ''}</span>
-                                {status_html}
-                            </div>
-                        </div>
-                        """
-                    )
-            else:
-                st.caption("No budget data available.")
-
-    with row2_right:
-        with st.container(border=True):
-            st.html(
-                """
-                <div class="panel-header">
-                    <div>
-                        <div class="panel-title">Monthly Income vs Expenses Comparison</div>
-                        <div style="font-size:12px; color:#8E95A9; margin-top:2px;">
-                            Solid indigo bars: Income (positive) • Striped/lavender bars: Expense magnitude (spending outflow)
-                        </div>
+    budgets, comparison = st.columns([2.85, 7.15])
+    with budgets, st.container(key="dashboard_budgets"):
+        st.html('<div class="panel-header"><span class="panel-title">Monthly budgets</span></div>')
+        budget_targets = db.get_budgets(st.session_state.selected_month)
+        comparisons = calculate_budget_comparisons(summary.expense_by_category_paise, budget_targets)
+        if comparisons:
+            colors = ("#19b961", "#0baeca", "#5675f3", "#6148e5", "#9149ea")
+            rows = []
+            for index, item in enumerate(comparisons[:5]):
+                color = colors[index]
+                spent = format_inr(item.spent_paise)
+                if item.budget_paise is None:
+                    status = spent + " · No target"
+                elif item.is_over:
+                    status = format_inr(item.delta_paise) + " over"
+                else:
+                    status = spent + " / " + format_inr(item.budget_paise)
+                progress = min(100, item.percent_used or 0)
+                rows.append(
+                    f'''
+                    <div class="budget-preview-item">
+                      <div class="budget-preview-label">
+                        <span class="budget-dot" style="background:{color}" aria-hidden="true">{html.escape(item.category[:1])}</span>
+                        <span>{html.escape(item.category)}</span><small>{status}</small>
+                      </div>
+                      <div class="budget-progress-track" aria-hidden="true">
+                        <div class="budget-progress-fill" style="width:{progress}%;background:{color}"></div>
+                      </div>
                     </div>
-                    <span style="color:#A0AEC0; font-size:14px;">⋮</span>
-                </div>
-                """
-            )
-
-            all_txs_dataset = db.get_transactions()
-            multi_month = calculate_multi_month_comparison(all_txs_dataset)
-
-            if multi_month:
-                comp_rows = []
-                for mm in multi_month:
-                    # Income above baseline (+ve)
-                    comp_rows.append(
-                        {
-                            "Month": mm["month_label"],
-                            "Type": "Income",
-                            "Amount": mm["income_inr"],
-                            "DisplayAmount": f"₹{mm['income_inr']:,.2f}",
-                        }
-                    )
-                    # Expense below baseline (-ve for mirrored layout, with positive tooltip magnitude)
-                    comp_rows.append(
-                        {
-                            "Month": mm["month_label"],
-                            "Type": "Expenses",
-                            "Amount": -mm["expense_inr"],
-                            "DisplayAmount": f"₹{mm['expense_inr']:,.2f}",
-                        }
-                    )
-
-                df_mm = pd.DataFrame(comp_rows)
-
-                mirrored_bar = (
-                    alt.Chart(df_mm)
-                    .mark_bar(cornerRadius=6, size=28)
-                    .encode(
-                        x=alt.X("Month:N", title=None, axis=alt.Axis(labelAngle=0, labelColor="#4A5568")),
-                        y=alt.Y(
-                            "Amount:Q",
-                            title="Net Flow (₹)",
-                            axis=alt.Axis(
-                                format="~s",
-                                labelColor="#7A8499",
-                                gridColor="#F1F4FA",
-                            ),
-                        ),
-                        color=alt.Color(
-                            "Type:N",
-                            scale=alt.Scale(domain=["Income", "Expenses"], range=["#373EDC", "#B3B3F4"]),
-                            legend=alt.Legend(orient="top", title=None),
-                        ),
-                        tooltip=[
-                            alt.Tooltip("Month:N"),
-                            alt.Tooltip("Type:N"),
-                            alt.Tooltip("DisplayAmount:N", title="Recorded Amount"),
-                        ],
-                    )
-                    .properties(height=260)
+                    '''
                 )
+            st.html('<div class="budget-preview">' + "".join(rows) + '</div>')
+        else:
+            st.caption("Set a budget to track spending against a target.")
 
-                rule = alt.Chart(pd.DataFrame([{"y": 0}])).mark_rule(color="#CBD5E1", strokeWidth=1).encode(y="y:Q")
-
-                st.altair_chart(mirrored_bar + rule, width="stretch")
-            else:
-                st.caption("No multi-month records available.")
+    with comparison, st.container(key="dashboard_comparison"):
+        multi_month = calculate_multi_month_comparison(db.get_transactions())
+        hint = '<span class="chart-period">Select a month to explore</span>' if multi_month else ''
+        st.html(f'<div class="panel-header"><span class="panel-title">Monthly income vs expenses</span>{hint}</div>')
+        if multi_month:
+            render_monthly(multi_month, selected_month=st.session_state.selected_month, key="overview_monthly")
+        else:
+            st.caption("Record income or expenses to compare months.")
 
 
 # =============================================================================
@@ -935,12 +730,10 @@ elif st.session_state.active_nav == "Transactions":
     st.caption("Browse, search, edit categories, and record student financial entries.")
 
     # Top Filters & Add Transaction Expander
-    f_cols = st.columns([3, 2, 2, 2])
+    f_cols = st.columns([2, 2, 3])
     with f_cols[0]:
-        t_search = st.text_input("Filter by description", value=st.session_state.search_query, placeholder="Filter by text...")
-    with f_cols[1]:
         type_filter = st.selectbox("Type", options=["All", "income", "expense", "transfer"])
-    with f_cols[2]:
+    with f_cols[1]:
         cat_filter = st.selectbox("Category", options=["All"] + sorted(list(ALLOWED_EXPENSE_CATEGORIES)) + ["Income", "Transfer"])
 
     with st.expander("➕ Add New Transaction"):
@@ -1010,7 +803,7 @@ elif st.session_state.active_nav == "Transactions":
         year_month=st.session_state.selected_month,
         category=cat_filter if cat_filter != "All" else None,
         tx_type=type_filter if type_filter != "All" else None,
-        search_query=t_search if t_search else None,
+        search_query=st.session_state.search_query.strip() or None,
     )
 
     if matching_txs:

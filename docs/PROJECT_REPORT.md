@@ -1,4 +1,4 @@
-# Student Finance Assistant — Academic Project Report
+# SpendStory — Academic Project Report
 
 **Course:** AI for Finance (CIA-2 Assignment)  
 **Submission Date:** November 6, 2026  
@@ -10,7 +10,7 @@
 ## 1. Executive Summary & Problem Definition
 College students and young adults frequently face fragmented cash outflows, irregular allowances, and difficulties tracking discretionary expenditure against personal budgets. Mainstream consumer finance tools suffer from privacy drawbacks (requiring direct third-party access to banking credentials/APIs), feature bloat (credit card marketing, cryptocurrency portfolios, complex multi-currency wallets), and mathematical inaccuracy stemming from floating-point arithmetic.
 
-**Student Finance Assistant** is a privacy-first, fully local desktop application built to answer three fundamental questions:
+**SpendStory** is a local finance dashboard built to answer three fundamental questions:
 1. *Where did my recorded money go this month?*
 2. *Which specific category budgets did I exceed?*
 3. *What actionable spending reduction will bring me back within target?*
@@ -52,7 +52,7 @@ The system employs a strict three-tier architecture ensuring separation between 
 
 The visual design is modeled on the Dribbble "Nexora" Money Management Dashboard reference:
 - **Pale Lavender Canvas (`#E2E7F5`):** Outer backdrop framing a centered, rounded white application shell (`border-radius: 28px`).
-- **Quiet Left Sidebar (`#F8FAFD`):** Nexora wordmark, thin-icon navigation items with dynamic review count badges, and an idempotent "Load Fictional Demo" quick action card.
+- **Left sidebar** with the SpendStory wordmark, line icons, a review count, and a demo loader that skips records already present.
 - **Four Financial Summary Cards:**
   - *Recorded Income:* Displays positive allowances (`₹15,000.00` in Oct/Nov).
   - *Recorded Expenses:* Displays spending outflow (`₹9,900.00` in Oct, `₹8,340.00` in Nov).
