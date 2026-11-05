@@ -85,6 +85,12 @@
 .finance-chart .empty { color: #606a85; font-size: 12px; text-align: center; padding: 44px 8px; }
 .finance-chart .chart-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 
+.finance-chart .donut-actions { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 6px; }
+.finance-chart .donut-drill-btn:hover { background: #3f36e8 !important; transform: translateY(-1px); }
+.finance-chart .donut-drill-btn:focus-visible { outline: 2px solid #373edc; outline-offset: 1px; }
+.finance-chart .donut-clear-btn:hover { background: #e2e8f0 !important; color: #182354 !important; }
+.finance-chart .donut-clear-btn:focus-visible { outline: 2px solid #373edc; outline-offset: 1px; }
+
 @keyframes reveal-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes reveal-ring { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
 @keyframes grow { from { transform: scaleY(.001); } to { transform: scaleY(1); } }

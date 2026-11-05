@@ -101,6 +101,13 @@ def test_budget_persistence(db):
     budgets_updated = db.get_budgets("2026-10")
     assert budgets_updated["Food"] == 350000
 
+    # Delete budget (sets to No target)
+    deleted = db.delete_budget("2026-10", "Food")
+    assert deleted is True
+    budgets_after_del = db.get_budgets("2026-10")
+    assert "Food" not in budgets_after_del
+    assert budgets_after_del["Transport"] == 100000
+
 
 def test_load_demo_data_idempotency(db):
     res1 = db.load_demo_data("data/demo/transactions.csv")

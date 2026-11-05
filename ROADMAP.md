@@ -1,48 +1,68 @@
-# Development Roadmap — Student Finance Assistant
+# Development Roadmap — SpendStory Full UI Audit & Polish
 
-## Milestone 1: Core Financial Backend & Storage Engine
-- **Objective:** Build robust, pure-Python modules for transactions, paise-based arithmetic, and SQLite persistence.
-- **Deliverables:**
-  - `src/transactions.py` (Validation, Decimal -> Paise, CSV parsing, fingerprinting)
-  - `src/storage.py` (SQLite schema, atomic migrations, CRUD, demo data loader)
-  - `src/analytics.py` (Paise sums, monthly filters, transfer exclusions, budget math, safe export)
-  - Comprehensive unit tests in `tests/test_transactions.py`, `tests/test_storage.py`, `tests/test_analytics.py`
-- **Success Criteria:** Independent verification that October and November demo totals match `data/demo/EXPECTED_TOTALS.json` to the exact paise.
+## Phase 1: Shared App Shell & Interaction Language
+- **Objective:** Establish rock-solid visual consistency, responsive layout, and clean interaction states across all five views.
+- **Key Deliverables:**
+  - Audit sidebar and sticky toolbar at 1280px laptop and 390px mobile viewports; fix label and demo button wrapping.
+  - Make toolbar controls strictly contextual: hide search, month selector, and CSV actions on Model Evaluation; preserve on Overview, Transactions, and Budgets.
+  - Implement real-time unreviewed badge in sidebar navigation (`Category Review (N)`).
+  - Unify button styling, status badges, typography, and card surfaces across all pages.
+  - Standardize motion timings (120–180ms hover/focus, 180–260ms panel entrances, 300–500ms chart reveals) and verify `@media (prefers-reduced-motion)`.
 
-## Milestone 2: AI Categorization & Evaluation Pipeline
-- **Objective:** Implement the TF-IDF + Logistic Regression classification pipeline with vocabulary-based abstention and holdout evaluation.
-- **Deliverables:**
-  - `src/categorizer.py` (Pipeline fit, predict with confidence & OOV check, model caching)
-  - `scripts/evaluate_model.py` (Evaluation runner producing `reports/model_evaluation.json`)
-  - Unit tests in `tests/test_categorizer.py`
-- **Success Criteria:** Zero data leakage from holdout dataset; all unknown/low-confidence inputs routed to "Other (Needs Review)"; honest reporting of precision/recall/F1 metrics.
+## Phase 2: Overview Dashboard & Actionable Drill-Down
+- **Objective:** Refine the high-fidelity Overview dashboard with clear deficit indication, improved chart interactions, and direct transaction drill-down.
+- **Key Deliverables:**
+  - Summary cards: distinct visual treatment for positive surplus vs deficit (amber/red badge for negative surplus) and secondary styling for transfers.
+  - Trend Scrubber: single crisp marker, stable tooltip, reliable day labels, graceful handling of empty/1-date/multi-date periods.
+  - Category Doughnut: pinned slice highlight with explicit **"View transactions"** action that switches to Transactions with active month, expense type, and pinned category selected.
+  - Monthly Comparison: clickable bars updating month and URL state; selected-month highlight band; animated expense reflection with positive magnitude in tooltip.
+  - Budget Preview: actionable preview with over-target alerts, link to full Budgets view, truncation notice ("Showing 5 of N categories"), and explicit "No target" label.
 
-## Milestone 3: Dribbble Nexora High-Fidelity UI Implementation
-- **Objective:** Create the complete Streamlit interface matching the visual design brief in `handoff/DRIBBBLE_UI_PROMPT.md` and reference image `docs/ui-reference/reference.png`.
-- **Deliverables:**
-  - `.streamlit/config.toml` (Theme tokens: lavender backdrop, fonts, clean surfaces)
-  - `app.py` (Complete UI with custom CSS, modern typography, responsive grid)
-  - 4 Summary Metric Cards (Income, Expenses, Surplus, Transfers Excluded)
-  - 70/30 Asymmetric Chart Row (Cumulative Income/Expense trend + Category Doughnut)
-  - 30/70 Asymmetric Chart Row (Category Budgets progress + Mirrored Monthly comparison)
-  - Functional views: Overview, Transactions, Budgets, Category Review, Model Evaluation
-- **Success Criteria:** High visual match to the Dribbble reference, fully interactive controls, zero fake buttons.
+## Phase 3: Transactions View & CSV Workflows
+- **Objective:** Deliver a dense, responsive transaction ledger with streamlined editing, safe deletion, and robust CSV flows.
+- **Key Deliverables:**
+  - Dense responsive ledger with tabular desktop view and clean mobile cards.
+  - Prominent "Add transaction" dialog/editor near header with inline validation and AI suggestion option.
+  - Consolidated filter area (Search, Type, Category, Review Status) with result counts, active filter chips, and 1-click reset.
+  - Full IDs displayed in details/tooltips rather than wrapping in main table rows.
+  - Safe deletion workflow with confirmation naming the record and Cancel path.
+  - Atomic CSV import with preview, error feedback, and duplicate protection.
+  - Safe CSV export with formula injection escaping.
 
-## Milestone 4: Verification, Browser Testing & Real Screenshot Audit
-- **Objective:** Run end-to-end tests, launch local Streamlit server, execute browser automation to capture real screenshots across desktop (1440x1000) and mobile (390px) viewports, and audit visual parity against `docs/ui-reference/reference.png`.
-- **Deliverables:**
-  - `docs/ui-implementation/desktop_dashboard.png`
-  - `docs/ui-implementation/mobile_dashboard.png`
-  - `docs/ui-implementation/transactions_view.png`
-  - `docs/ui-implementation/budgets_view.png`
-  - `docs/ui-implementation/category_review_view.png`
-  - `tests/test_ui_smoke.py`
-- **Success Criteria:** All unit and smoke tests passing; real browser screenshots saved and visually compared.
+## Phase 4: Budgets View Deep Polish
+- **Objective:** Unify category budget targets, actual spend, remaining amounts, and recommendations into a scannable, cohesive interface.
+- **Key Deliverables:**
+  - Consolidated category card layout combining target, spend, remaining balance, and status.
+  - Inline edit affordances with explicit Save and Cancel; atomic multi-category persistence.
+  - Explicit distinction between "No target" and intentional ₹0 budget; draft preservation without leaking between months.
+  - Bounded progress bars showing exact overage without visual clipping.
+  - Deterministic spending suggestions tied to computed category differences.
 
-## Milestone 5: Quality Control & Academic Documentation
-- **Objective:** Complete project reports, viva preparation guide, and clean codebase for submission.
-- **Deliverables:**
-  - `docs/PROJECT_REPORT.md` (Formal 3-4 page academic report)
-  - `docs/VIVA_GUIDE.md` (Comprehensive viva defense guide covering algorithms, design trade-offs, and math)
-  - Updated `README.md` and `docs/DEMO_SCRIPT.md`
-- **Success Criteria:** Repository in a 100% reproducible, runnable state with complete documentation.
+## Phase 5: Category Review Queue
+- **Objective:** Streamline the AI review workflow with explicit queue scoping, plain-language explanations, and clear confirmation.
+- **Key Deliverables:**
+  - Explicit queue count and scope selector (Current Month vs All Records).
+  - Synchronized sidebar badge count.
+  - Card layout with description, date, amount, current suggestion, uncalibrated model score, and plain-language reason for review.
+  - Explicit confirmation and manual category correction preserving `category_source="manual"`.
+  - Skip and inspect options without accidental confirmation.
+  - Graceful empty queue state and synthetic review queue fixtures.
+
+## Phase 6: Model Evaluation & Transparency
+- **Objective:** Elevate the Model Evaluation page to match the lavender visual system with plain-language metrics and accessible comparisons.
+- **Key Deliverables:**
+  - Visual styling aligned with Overview (lavender container, white cards, elegant metrics).
+  - Prominent disclosure that evaluation operates on synthetic held-out examples independent of the finance month.
+  - Plain-language metrics: overall accuracy, coverage, abstention rate, and per-category support.
+  - Formatted comparison table/graphic replacing raw JSON/grid.
+  - Expandable explanations for technical details and friendly recovery message with CLI command.
+
+## Phase 7: Verification, Automated Browser Captures & Acceptance
+- **Objective:** Verify end-to-end functionality, execute complete test suite, and capture real browser evidence across all views and viewports.
+- **Key Deliverables:**
+  - Isolated preview running on dedicated port (e.g. 8502 or 8515) with temporary SQLite database.
+  - Validate exact October 2026 demo totals: Income ₹15,000, Expenses ₹9,900, Surplus ₹5,100, Transfers ₹2,000.
+  - Pytest suite passing with new regression tests for drill-downs and budget logic.
+  - Chrome CDP browser automation capturing all 5 views at 1440×1000, 1280×800, and 390px.
+  - Verification of reduced-motion mode and empty states.
+  - Complete acceptance report with browser evidence.

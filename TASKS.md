@@ -1,58 +1,68 @@
-# Tasks List — Student Finance Assistant
+# Tasks Checklist — SpendStory Full UI Audit & Polish
 
-## Milestone 1: Core Financial Backend & Storage Engine
-- [x] Create `src/__init__.py` and `tests/__init__.py`
-- [x] Implement `src/transactions.py` (Validation, Decimal -> Paise conversion, CSV parsing, SHA-256 fingerprinting)
-- [x] Implement `src/storage.py` (SQLite connection, schema migration, transaction CRUD, budget CRUD, idempotent demo loader)
-- [x] Implement `src/analytics.py` (Integer paise math, monthly aggregations, transfer exclusions, budget deltas, suggestions, safe CSV export)
-- [x] Write unit tests: `tests/test_transactions.py`
-- [x] Write unit tests: `tests/test_storage.py`
-- [x] Write unit tests: `tests/test_analytics.py`
-- [x] Run pytest to verify all Milestone 1 tests pass and exact demo totals match `EXPECTED_TOTALS.json`
-- [x] Git checkpoint commit for Milestone 1
+## Phase 1: Shared App Shell & Interaction Language
+- [x] Audit sidebar navigation and sticky toolbar at 1280px laptop and 390px mobile viewports
+- [x] Fix sidebar label wrapping and demo button text wrapping at 1280px
+- [x] Make toolbar controls contextual: hide search, month selector, and CSV buttons on Model Evaluation
+- [x] Display real-time unreviewed badge in sidebar navigation (`Category Review (N)`)
+- [x] Standardize typography, status badges, button variants, and surface treatments across all pages
+- [x] Implement smooth 120–180ms hover/focus, 180–260ms panel entrances, and verify `@media (prefers-reduced-motion)`
 
-## Milestone 2: AI Categorizer & Evaluation Pipeline
-- [x] Implement `src/categorizer.py` (TF-IDF + Logistic Regression, confidence score, OOV check, abstention mechanism)
-- [x] Implement `scripts/evaluate_model.py` (Holdout evaluation, confusion matrix, JSON report output)
-- [x] Write unit tests: `tests/test_categorizer.py`
-- [x] Execute `scripts/evaluate_model.py` and generate `reports/model_evaluation.json`
-- [x] Run pytest across all test suites
-- [x] Git checkpoint commit for Milestone 2
+## Phase 2: Overview Dashboard & Actionable Drill-Down
+- [x] Refine 4 summary metric cards: clear green badge for positive surplus, distinct amber/red badge for deficit
+- [x] Make Transfers Excluded card visually secondary with clear explanatory caption
+- [x] Refine Trend Scrubber: single crisp marker, stable tooltip, reliable day labels, graceful handling of empty/1-date periods
+- [x] Update Category Doughnut: add **"View transactions"** action for pinned category that opens Transactions with month, expense type, and pinned category selected
+- [x] Verify Monthly Comparison bars: clickable month selection updating URL and state; selected-month band; animated expense reflection with positive magnitude tooltip
+- [x] Enhance Budget Preview: show over-target alerts, link to full Budgets view, show truncation indicator ("Showing 5 of N categories"), and explicit "No target" label
 
-## Milestone 3: High-Fidelity UI Implementation (Dribbble Nexora Theme)
-- [x] Configure `.streamlit/config.toml` (Base theme, colors, font settings)
-- [x] Build `app.py` structure (Session state initialization, router, layout engine)
-- [x] Inject custom scoped CSS for the Dribbble Nexora look & feel (pale lavender `#DCE2F4`, rounded white app shell, quiet sidebar `#F7F8FA`, compact header)
-- [x] Implement Overview Dashboard:
-  - [x] 4 equal financial summary cards (Income, Expenses, Surplus, Transfers Excluded)
-  - [x] 70/30 row: Cumulative Income/Expense trend line chart + Category Doughnut chart
-  - [x] 30/70 row: Monthly category budgets progress bars + Mirrored Monthly Comparison chart
-- [x] Implement Transactions View (Search bar, month filter, category filter, pagination/list, manual transaction form, inline category editor)
-- [x] Implement Budgets View (Monthly budget manager, progress indicators, overspend alerts, deterministic recommendations)
-- [x] Implement Category Review View (Unreviewed AI predictions, confidence indicators, batch/individual confirmation & correction)
-- [x] Implement Model Evaluation View (Display offline training metrics, holdout confusion matrix, abstention counts)
-- [x] Implement CSV Ingestion & Demo Data Controls (Preview before atomic commit, duplicate checking, clear data with confirmation)
-- [x] Write UI smoke tests in `tests/test_ui_smoke.py`
-- [x] Git checkpoint commit for Milestone 3
+## Phase 3: Transactions View & CSV Workflows
+- [x] Implement denser, responsive ledger: tabular desktop view and clean mobile stacked cards
+- [x] Truncate full transaction IDs with tooltip or detail view to prevent row wrapping
+- [x] Add prominent "Add transaction" dialog/editor near header with inline validation and AI suggestion option
+- [x] Consolidate filter bar: Search, Type, Category, and Review Status with result count and 1-click reset
+- [x] Accept and apply incoming Category drill-down from Overview doughnut on initial render
+- [x] Implement safe row deletion with confirmation modal/dialog and single final database write
+- [x] Streamline CSV import: file selection, schema guidance, preview before commit, and duplicate protection
+- [x] Ensure safe CSV export with formula injection escaping
 
-## Milestone 4: Verification, Browser Screen Captures & Visual Audit
-- [x] Run Streamlit app in headless background mode
-- [x] Verify HTTP 200 health response at `http://127.0.0.1:8501`
-- [x] Use headless Chrome/Edge to capture real screenshots:
-  - [x] Desktop dashboard (1440x1000) -> `docs/ui-implementation/desktop_dashboard.png`
-  - [x] Mobile dashboard (390x844) -> `docs/ui-implementation/mobile_dashboard.png`
-  - [x] Transactions view -> `docs/ui-implementation/transactions_view.png`
-  - [x] Budgets view -> `docs/ui-implementation/budgets_view.png`
-  - [x] Category review view -> `docs/ui-implementation/category_review_view.png`
-- [x] Visually compare screenshots with `docs/ui-reference/reference.png` and tune CSS/visual details
-- [x] Stop background test server
-- [x] Git checkpoint commit for Milestone 4
+## Phase 4: Budgets View Deep Polish
+- [x] Unify category budget layout: target, actual spend, remaining amount, and status together at a single glance
+- [x] Provide inline edit affordance with explicit Save and Cancel; atomic multi-category persistence
+- [x] Differentiate "No target" from intentional ₹0 budget; prevent draft values leaking between months
+- [x] Build bounded progress bars with matching labels and clear over-target indicators
+- [x] Display deterministic spending adjustment suggestions based on computed category deltas
 
-## Milestone 5: Quality Control, Reports & Documentation
-- [x] Perform full code quality review (anti-patterns, security, performance, typing)
-- [x] Generate comprehensive `docs/PROJECT_REPORT.md` (3-4 pages academic report)
-- [x] Generate `docs/VIVA_GUIDE.md` (Detailed Q&A viva defense preparation)
-- [x] Update `README.md` with complete installation, usage, and visual documentation
-- [x] Update `docs/DEMO_SCRIPT.md` with step-by-step 5-minute presentation script
-- [x] Run full test suite (`pytest -q`, `pip check`, `scripts/evaluate_model.py`)
-- [x] Final Git checkpoint commit
+## Phase 5: Category Review Queue
+- [x] Provide explicit queue count and scope selector (Current Month vs All Records)
+- [x] Align sidebar navigation badge with active queue count
+- [x] Populate review cards: description, date, amount, current suggestion, uncalibrated model score, and plain-language explanation
+- [x] Implement explicit confirmation and manual correction buttons preserving `category_source="manual"`
+- [x] Provide skip and inspect actions without accidental confirmation
+- [x] Build clean empty queue state and support synthetic review queue fixtures
+
+## Phase 6: Model Evaluation & Transparency
+- [x] Restyle Model Evaluation to match the lavender visual theme (lavender frame, white cards, elegant metrics)
+- [x] Add clear disclaimer stating evaluation is offline on synthetic held-out examples independent of the finance month
+- [x] Display readable metrics: training/holdout counts, overall accuracy, coverage, abstention rate
+- [x] Render formatted comparison table/graphic replacing raw JSON/grid
+- [x] Provide expandable explanations for technical limitations and friendly recovery command (`python scripts/evaluate_model.py`)
+
+## Phase 7: Verification, Automated Browser Captures & Acceptance
+- [x] Configure isolated preview server on a free port (e.g. 8502 or 8515) with temporary SQLite database
+- [x] Load fictional demo data (`data/demo/transactions.csv`) into temporary database
+- [x] Verify exact October 2026 totals: Income ₹15,000, Expenses ₹9,900, Surplus ₹5,100, Transfers ₹2,000
+- [x] Write targeted pytest tests for drill-down routing, budget state persistence, and CSV security
+- [x] Run complete pytest suite and verify 100% pass rate
+- [x] Update `scripts/capture_screenshots.py` to target isolated preview port and capture:
+  - [x] Desktop dashboard (1440×1000)
+  - [x] Laptop dashboard (1280×800)
+  - [x] Mobile dashboard (390px)
+  - [x] Transactions view (with filtered ledger and add form)
+  - [x] Budgets view (with overspend and targets)
+  - [x] Category Review view (populated queue and empty state)
+  - [x] Model Evaluation view
+  - [x] Chart interaction / tooltip highlight
+- [x] Review captured screenshots against visual references and verify zero defects
+- [x] Commit milestones to Git with clean commit history
+- [x] Provide complete acceptance report with browser evidence

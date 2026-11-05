@@ -31,7 +31,6 @@ from src.transactions import (
     compute_fingerprint,
     parse_amount_to_paise,
     parse_transactions_csv,
-    validate_transaction_row,
 )
 
 
@@ -85,14 +84,13 @@ NEXORA_CSS = """
     padding-left: 6px;
 }
 
-
 /* Sidebar Navigation Items */
 .stRadio > div {
     gap: 6px;
 }
 
 .stRadio label {
-    font-size: 13.5px !important;
+    font-size: 13px !important;
     font-weight: 500 !important;
     color: #4A5568 !important;
     padding: 8px 12px !important;
@@ -106,7 +104,6 @@ NEXORA_CSS = """
 }
 
 /* Top Toolbar */
-
 .view-title {
     font-size: 20px;
     font-weight: 700;
@@ -117,30 +114,30 @@ NEXORA_CSS = """
 
 /* Greeting Section */
 .greeting-header {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
-    color: #14182D;
+    color: #182263;
     letter-spacing: -0.5px;
     margin-bottom: 2px;
 }
 
 .greeting-subtext {
     font-size: 13px;
-    color: #8E95A9;
+    color: #586889;
     font-weight: 400;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 /* Four Equal Financial Summary Cards */
 .metric-card {
     background-color: #F8FAFD;
     border: 1px solid #EAEFF7;
-    border-radius: 16px;
-    padding: 18px 20px;
+    border-radius: 14px;
+    padding: 16px 18px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 118px;
+    min-height: 112px;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -164,7 +161,7 @@ NEXORA_CSS = """
 }
 
 .metric-figure {
-    font-size: 26px;
+    font-size: clamp(20px, 1.8vw, 26px);
     font-weight: 700;
     color: #182263;
     letter-spacing: -0.6px;
@@ -185,14 +182,30 @@ NEXORA_CSS = """
 
 .metric-badge.green {
     color: #0E9F6E;
+    font-weight: 600;
+}
+
+.metric-badge.red {
+    color: #D32F2F;
+    font-weight: 600;
+    background: #FDE8E8;
+    padding: 2px 6px;
+    border-radius: 4px;
 }
 
 .metric-badge.purple {
     color: #7E3AF2;
+    font-weight: 600;
 }
 
 .metric-badge.blue {
     color: #373EDC;
+    font-weight: 600;
+}
+
+.metric-badge.secondary {
+    color: #64748B;
+    font-weight: 400;
 }
 
 /* Chart panel headings */
@@ -200,21 +213,18 @@ NEXORA_CSS = """
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .panel-title {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
-    color: #14182D;
+    color: #182263;
     letter-spacing: -0.2px;
     margin: 0;
 }
 
-
 /* Category Budget Row */
-
-
 .budget-progress-track {
     width: 100%;
     height: 7px;
@@ -241,8 +251,17 @@ NEXORA_CSS = """
 }
 
 .badge-review {
-    background-color: #FDE8E8;
-    color: #9B1C1C;
+    background-color: #FEF3C7;
+    color: #92400E;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.badge-overbudget {
+    background-color: #FEE2E2;
+    color: #991B1B;
     padding: 3px 8px;
     border-radius: 6px;
     font-size: 11px;
@@ -273,31 +292,31 @@ NEXORA_CSS = """
 .sidebar-promo-card {
     background: linear-gradient(145deg, #F0F4FE 0%, #E7EDFD 100%);
     border: 1px solid #D5E1FB;
-    border-radius: 16px;
-    padding: 16px;
-    margin-top: 24px;
+    border-radius: 14px;
+    padding: 12px;
+    margin-top: 18px;
 }
 
 .sidebar-promo-title {
     font-size: 13px;
     font-weight: 700;
     color: #14182D;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 .sidebar-promo-desc {
-    font-size: 11.5px;
+    font-size: 11px;
     color: #5A6478;
-    line-height: 1.4;
-    margin-bottom: 12px;
+    line-height: 1.35;
+    margin-bottom: 10px;
 }
 
 /* Streamlit 1.66: the app view is the common parent of sidebar and main. */
 @media (min-width: 901px) {
   [data-testid="stAppViewContainer"] {
-    --frame-gutter: clamp(20px, 2.2vw, 42px);
-    --frame-top: clamp(18px, 2.8vh, 32px);
-    --rail: clamp(166px, 13.4vw, 222px);
+    --frame-gutter: clamp(18px, 2.2vw, 42px);
+    --frame-top: clamp(16px, 2.5vh, 30px);
+    --rail: clamp(200px, 15.5vw, 240px);
     margin: var(--frame-top) auto !important;
     height: calc(100dvh - 2 * var(--frame-top)) !important;
     min-height: 0 !important;
@@ -323,10 +342,10 @@ NEXORA_CSS = """
 [data-testid="stHeader"] { background: transparent !important; height: 0 !important; }
 [data-testid="stToolbar"], [data-testid="stAppDeployButton"] { display: none !important; }
 [data-testid="stMain"] { background: white !important; }
-[data-testid="stMainBlockContainer"] { max-width: none !important; padding: 0 14px 16px !important; }
+[data-testid="stMainBlockContainer"] { max-width: none !important; padding: 0 16px 20px !important; }
 [data-testid="stSidebar"] { padding-top: 0 !important; background: #f3f6f8 !important; }
 [data-testid="stSidebar"] [data-testid="stSidebarContent"] { padding: 0 !important; }
-[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] { padding: 0 13px 14px !important; min-height: 100%; }
+[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] { padding: 0 12px 14px !important; min-height: 100%; }
 [data-testid="stSidebar"] [data-testid="stSidebarUserContent"] > [data-testid="stVerticalBlock"] { min-height: 100%; }
 [data-testid="stSidebar"] [data-testid="stVerticalBlock"] > [data-testid="stElementContainer"]:has(.sidebar-spacer) { flex: 1; min-height: 12px; }
 [data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap: .55rem !important; }
@@ -335,7 +354,7 @@ NEXORA_CSS = """
 [data-testid="stSidebar"] .stRadio label:has(input:checked) { background: #e9eafd; color: #3029c5 !important; }
 [data-testid="stRadioOption"] > div > div:first-child { display: none; }
 [data-testid="stSidebar"] .stRadio label:focus-within { outline: 2px solid #373edc; outline-offset: 2px; }
-[data-testid="stSidebar"] .stRadio label p { display: flex; align-items: center; gap: 9px; font-size: 13px; }
+[data-testid="stSidebar"] .stRadio label p { display: flex; align-items: center; gap: 8px; font-size: 13px; white-space: nowrap; }
 [data-testid="stSidebar"] .stRadio label p::before {
   content: ''; flex: 0 0 16px; height: 16px; background: currentColor;
   mask: var(--nav-icon) center / contain no-repeat;
@@ -347,10 +366,10 @@ NEXORA_CSS = """
 [data-testid="stSidebar"] .stRadio [role="radiogroup"] > :nth-child(5) { --nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8'%3E%3Cpath d='M4 4v16h16M8 16v-4m5 4V8m5 8V5'/%3E%3C/svg%3E"); }
 [data-testid="stMain"] [data-testid="stVerticalBlock"] { gap: .65rem; }
 :is(.st-key-dashboard_trend, .st-key-dashboard_breakdown, .st-key-dashboard_budgets, .st-key-dashboard_comparison) {
-  background: #f3f5f7; border: 1px solid #edf0f4; border-radius: 10px; padding: 12px !important;
+  background: #f3f5f7; border: 1px solid #edf0f4; border-radius: 12px; padding: 14px !important;
 }
-.trend-surplus { line-height: 1.2; margin-top: 4px; color: #182263; font-size: 28px; font-weight: 750; letter-spacing: -.7px; }
-.chart-period { color: #586889; font-size: 10.5px; text-align: right; }
+.trend-surplus { line-height: 1.2; margin-top: 4px; color: #182263; font-size: 26px; font-weight: 750; letter-spacing: -.6px; }
+.chart-period { color: #586889; font-size: 11px; text-align: right; }
 @media (min-width: 901px) {
   .st-key-dashboard_trend, .st-key-dashboard_breakdown { min-height: 314px; }
   .st-key-dashboard_budgets, .st-key-dashboard_comparison { min-height: 275px; }
@@ -365,21 +384,17 @@ NEXORA_CSS = """
 }
 .st-key-dashboard_demo .sidebar-promo-card { margin: 0; padding: 0; text-align: center; background: transparent; border: 0; }
 .st-key-dashboard_demo .sidebar-promo-desc { margin: 0; }
+.st-key-dashboard_demo button p { white-space: nowrap !important; font-size: 12.5px !important; }
 .st-key-dashboard_demo [data-testid="stExpander"] { background: #fff; border-radius: 8px; }
 .st-key-dashboard_demo [data-testid="stExpander"] summary { padding: 5px 8px; }
-.greeting-header { font-size: 18px; color: #182263; }
-.greeting-subtext { margin-bottom: 2px; color: #586889; font-size: 12px; }
-.metric-card { height: 108px; padding: 12px 13px; border-radius: 9px; background: #f3f5f7; }
-.metric-figure { font-size: clamp(17px, 1.75vw, 27px); }
 .panel-header { margin: 0; }
-.panel-title { font-size: 13px; color: #182263; }
-.st-key-dashboard_toolbar { padding: 6px 0; border-bottom: 1px solid #e8ebf0; }
+.st-key-dashboard_toolbar { padding: 8px 0; border-bottom: 1px solid #e8ebf0; }
 @media (min-width: 901px) {
   [data-testid="stLayoutWrapper"]:has(> .st-key-dashboard_toolbar) {
     position: sticky; top: 0; z-index: 5; background: #fff;
   }
 }
-.st-key-dashboard_toolbar .view-title { font-size: 17px; }
+.st-key-dashboard_toolbar .view-title { font-size: 18px; }
 .st-key-dashboard_toolbar button { min-height: 33px; padding: 4px 9px; }
 .budget-preview { display: grid; gap: 6px; }
 .budget-preview-item { padding: 6px 9px; background: white; border-radius: 7px; }
@@ -394,8 +409,36 @@ NEXORA_CSS = """
 .st-key-dashboard_metrics [data-testid="stColumn"]:nth-child(3) .metric-figure { animation-delay: 70ms; }
 .st-key-dashboard_metrics [data-testid="stColumn"]:nth-child(4) .metric-figure { animation-delay: 105ms; }
 @keyframes value-enter { from { opacity: .4; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Ledger & Table Styling */
+.ledger-header {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 6px 10px;
+  border-bottom: 2px solid #EDF2F7;
+  margin-bottom: 4px;
+}
+.ledger-row {
+  background: white;
+  border: 1px solid #EDF2F7;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  transition: all 0.15s ease;
+}
+.ledger-row:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 12px rgba(20, 24, 45, 0.03);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .budget-progress-fill, .metric-card, .metric-figure, .stButton > button { animation: none !important; transition: none !important; }
+  .budget-progress-fill, .metric-card, .metric-figure, .stButton > button, .ledger-row {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 @media (max-width: 900px) {
   [data-testid="stMain"] { background: white !important; }
@@ -410,10 +453,9 @@ NEXORA_CSS = """
   .st-key-dashboard_metrics [data-testid="stColumn"],
   .st-key-dashboard_toolbar [data-testid="stColumn"] { width: 100% !important; min-width: 0 !important; }
   .st-key-dashboard_toolbar [data-testid="stColumn"]:first-child { grid-column: 1 / -1; }
-  .metric-card { height: 100px; }
+  .metric-card { min-height: 100px; padding: 12px; }
   .metric-figure { font-size: 19px; }
 }
-
 </style>
 """
 st.html(NEXORA_CSS)
@@ -433,12 +475,16 @@ categorizer = get_default_categorizer()
 NAV_OPTIONS = ("Overview", "Transactions", "Budgets", "Category Review", "Model Evaluation")
 available_months = db.get_available_months() or ["2026-10", "2026-11"]
 
-# A direct link initializes the widgets. Their keyed values own subsequent changes.
+# Direct query params initialize widgets; session state owns updates
 query_nav = st.query_params.get("nav")
 query_month = st.query_params.get("month")
+
 st.session_state.setdefault("active_nav", query_nav if query_nav in NAV_OPTIONS else "Overview")
 st.session_state.setdefault("selected_month", query_month if query_month in available_months else available_months[0])
 st.session_state.setdefault("search_query", "")
+st.session_state.setdefault("tx_type_filter", "All")
+st.session_state.setdefault("tx_cat_filter", "All")
+st.session_state.setdefault("tx_review_filter", "All")
 
 if st.session_state.selected_month not in available_months:
     st.session_state.selected_month = available_months[0]
@@ -447,6 +493,7 @@ if st.session_state.selected_month not in available_months:
 def open_search_results() -> None:
     if st.session_state.search_query.strip():
         st.session_state.active_nav = "Transactions"
+
 
 # -----------------------------------------------------------------------------
 # Sidebar Navigation & Actions
@@ -476,7 +523,6 @@ with st.sidebar:
     st.html('<div class="sidebar-spacer" aria-hidden="true"></div>')
 
     with st.container(key="dashboard_demo"):
-        # Sidebar Action Card (Replacing 'Upgrade to Pro' with Fictional Demo loader)
         st.html(
             """
             <div class="sidebar-promo-card">
@@ -504,51 +550,126 @@ with st.sidebar:
 
 
 # -----------------------------------------------------------------------------
-# Global Top Toolbar
+# Contextual Top Toolbar
 # -----------------------------------------------------------------------------
+all_txs_for_month = db.get_transactions(year_month=st.session_state.selected_month)
+show_import_dialog = False
+
 with st.container(key="dashboard_toolbar"):
-    toolbar_cols = st.columns([2.6, 2, 1.8, 1.1, 1.1], vertical_alignment="center")
+    if st.session_state.active_nav == "Overview":
+        toolbar_cols = st.columns([3.0, 2.0, 2.0, 1.2, 1.2], vertical_alignment="center")
+        with toolbar_cols[0]:
+            st.html('<h1 class="view-title">Overview</h1>')
+        with toolbar_cols[1]:
+            st.text_input(
+                "Search",
+                key="search_query",
+                placeholder="Search transactions...",
+                label_visibility="collapsed",
+                on_change=open_search_results,
+            )
+        with toolbar_cols[2]:
+            st.selectbox(
+                "Month",
+                options=available_months,
+                key="selected_month",
+                format_func=lambda ym: datetime.strptime(ym, "%Y-%m").strftime("%B %Y"),
+                label_visibility="collapsed",
+            )
+        with toolbar_cols[3]:
+            csv_bytes = export_transactions_to_csv(all_txs_for_month).encode("utf-8")
+            st.download_button(
+                label="Export CSV",
+                data=csv_bytes,
+                file_name=f"transactions_{st.session_state.selected_month}.csv",
+                mime="text/csv",
+                width="stretch",
+            )
+        with toolbar_cols[4]:
+            show_import_dialog = st.button("Import CSV", width="stretch")
 
-    with toolbar_cols[0]:
-        st.html(f'<h1 class="view-title">{st.session_state.active_nav}</h1>')
+    elif st.session_state.active_nav == "Transactions":
+        toolbar_cols = st.columns([2.6, 2.2, 1.8, 1.2, 1.2], vertical_alignment="center")
+        with toolbar_cols[0]:
+            st.html('<h1 class="view-title">Transactions</h1>')
+        with toolbar_cols[1]:
+            st.text_input(
+                "Search",
+                key="search_query",
+                placeholder="Search transactions...",
+                label_visibility="collapsed",
+            )
+        with toolbar_cols[2]:
+            st.selectbox(
+                "Month",
+                options=available_months,
+                key="selected_month",
+                format_func=lambda ym: datetime.strptime(ym, "%Y-%m").strftime("%B %Y"),
+                label_visibility="collapsed",
+            )
+        with toolbar_cols[3]:
+            csv_bytes = export_transactions_to_csv(all_txs_for_month).encode("utf-8")
+            st.download_button(
+                label="Export CSV",
+                data=csv_bytes,
+                file_name=f"transactions_{st.session_state.selected_month}.csv",
+                mime="text/csv",
+                width="stretch",
+            )
+        with toolbar_cols[4]:
+            show_import_dialog = st.button("Import CSV", width="stretch")
 
-    with toolbar_cols[1]:
-        st.text_input(
-            "Search",
-            key="search_query",
-            placeholder="Search transactions",
-            label_visibility="collapsed",
-            on_change=open_search_results,
-        )
+    elif st.session_state.active_nav == "Budgets":
+        toolbar_cols = st.columns([5.5, 2.0, 2.5], vertical_alignment="center")
+        with toolbar_cols[0]:
+            st.html('<h1 class="view-title">Budgets</h1>')
+        with toolbar_cols[1]:
+            st.html('<div style="text-align:right; color:#64748B; font-size:12px; font-weight:500;">Active Month:</div>')
+        with toolbar_cols[2]:
+            st.selectbox(
+                "Month",
+                options=available_months,
+                key="selected_month",
+                format_func=lambda ym: datetime.strptime(ym, "%Y-%m").strftime("%B %Y"),
+                label_visibility="collapsed",
+            )
 
-    with toolbar_cols[2]:
-        st.selectbox(
-            "Month",
-            options=available_months,
-            key="selected_month",
-            format_func=lambda ym: datetime.strptime(ym, "%Y-%m").strftime("%B %Y"),
-            label_visibility="collapsed",
-        )
+    elif st.session_state.active_nav == "Category Review":
+        toolbar_cols = st.columns([4.2, 3.2, 2.6], vertical_alignment="center")
+        with toolbar_cols[0]:
+            st.html('<h1 class="view-title">Category Review</h1>')
+        with toolbar_cols[1]:
+            st.radio(
+                "Review Scope",
+                options=["All Records", "Current Month"],
+                horizontal=True,
+                key="review_scope",
+                label_visibility="collapsed",
+            )
+        with toolbar_cols[2]:
+            if st.session_state.get("review_scope") == "Current Month":
+                st.selectbox(
+                    "Month",
+                    options=available_months,
+                    key="selected_month",
+                    format_func=lambda ym: datetime.strptime(ym, "%Y-%m").strftime("%B %Y"),
+                    label_visibility="collapsed",
+                )
+            else:
+                st.html('<div style="text-align:right; font-size:11.5px; color:#64748B;">Scope: Entire Database</div>')
 
-    all_txs_for_month = db.get_transactions(year_month=st.session_state.selected_month)
+    elif st.session_state.active_nav == "Model Evaluation":
+        toolbar_cols = st.columns([6.0, 4.0], vertical_alignment="center")
+        with toolbar_cols[0]:
+            st.html('<h1 class="view-title">Model Evaluation</h1>')
+        with toolbar_cols[1]:
+            st.html('<div style="text-align:right;"><span style="font-size:11.5px; background:#EDF0F7; color:#3B4863; padding:5px 10px; border-radius:12px; font-weight:600;">📊 Offline Holdout Dataset (Independent of Month)</span></div>')
 
-    with toolbar_cols[3]:
-        csv_bytes = export_transactions_to_csv(all_txs_for_month).encode("utf-8")
-        st.download_button(
-            label="Export CSV",
-            data=csv_bytes,
-            file_name=f"transactions_{st.session_state.selected_month}.csv",
-            mime="text/csv",
-            width="stretch",
-        )
-
-    with toolbar_cols[4]:
-        show_import_dialog = st.button("Import CSV", width="stretch")
-
+# Sync query parameters with navigation & month
 if query_nav != st.session_state.active_nav or query_month != st.session_state.selected_month:
     st.query_params.update(nav=st.session_state.active_nav, month=st.session_state.selected_month)
 
-# Optional CSV Import Staging Expander
+# CSV Import Panel
 if show_import_dialog or st.session_state.get("show_import_panel", False):
     st.session_state.show_import_panel = True
     with st.container(border=True):
@@ -581,7 +702,6 @@ if show_import_dialog or st.session_state.get("show_import_panel", False):
                 )
                 st.dataframe(preview_df, width="stretch", hide_index=True)
                 if st.button("Commit Atomic Import", type="primary"):
-                    # For transactions with empty categories, predict using AI
                     prepared_txs = []
                     for t in txs:
                         if t.type == "expense" and not t.category:
@@ -626,13 +746,25 @@ if st.session_state.active_nav == "Overview":
     )
 
     summary = calculate_monthly_summary(all_txs_for_month, st.session_state.selected_month)
+
+    # Distinct visual treatment for surplus vs deficit
+    if summary.recorded_surplus_paise > 0:
+        surplus_caption = "Positive surplus · Income less expenses"
+        surplus_tone = "green"
+    elif summary.recorded_surplus_paise < 0:
+        surplus_caption = "Recorded deficit · Expenses exceed income"
+        surplus_tone = "red"
+    else:
+        surplus_caption = "Exact balance"
+        surplus_tone = "blue"
+
     metrics = (
         ("Recorded income", summary.income_paise, "Income this month", "green"),
         ("Recorded expenses", summary.expense_paise, "Spending this month", "purple"),
-        ("Recorded surplus", summary.recorded_surplus_paise, "Income less expenses",
-         "green" if summary.recorded_surplus_paise >= 0 else "purple"),
-        ("Transfers excluded", summary.transfer_paise, "Moves between accounts", "blue"),
+        ("Recorded surplus", summary.recorded_surplus_paise, surplus_caption, surplus_tone),
+        ("Transfers excluded", summary.transfer_paise, "Tracked separately · Excluded from surplus", "secondary"),
     )
+
     with st.container(key="dashboard_metrics"):
         for column, (label, amount, caption, tone) in zip(st.columns(4), metrics):
             with column:
@@ -648,12 +780,13 @@ if st.session_state.active_nav == "Overview":
 
     trend, breakdown = st.columns([7.15, 2.85])
     with trend, st.container(key="dashboard_trend"):
+        surplus_color = "#182263" if summary.recorded_surplus_paise >= 0 else "#D32F2F"
         st.html(
             f'''
             <div class="panel-header">
                 <div>
                     <div class="panel-title">Income &amp; expense trends</div>
-                    <div class="trend-surplus">{format_inr(summary.recorded_surplus_paise)}</div>
+                    <div class="trend-surplus" style="color: {surplus_color};">{format_inr(summary.recorded_surplus_paise)}</div>
                 </div>
                 <span class="chart-period">Recorded surplus · {month_name}</span>
             </div>
@@ -683,24 +816,27 @@ if st.session_state.active_nav == "Overview":
         budget_targets = db.get_budgets(st.session_state.selected_month)
         comparisons = calculate_budget_comparisons(summary.expense_by_category_paise, budget_targets)
         if comparisons:
-            colors = ("#19b961", "#0baeca", "#5675f3", "#6148e5", "#9149ea")
+            colors = ("#19b961", "#0baeca", "#5675f3", "#6148e5", "#9149ea", "#f59e0b", "#ec4899")
             rows = []
             for index, item in enumerate(comparisons[:5]):
-                color = colors[index]
+                color = colors[index % len(colors)]
                 spent = format_inr(item.spent_paise)
                 if item.budget_paise is None:
-                    status = spent + " · No target"
+                    status = spent + " · No target set"
+                    badge_style = "color:#64748B;"
                 elif item.is_over:
                     status = format_inr(item.delta_paise) + " over"
+                    badge_style = "color:#D32F2F; font-weight:700;"
                 else:
                     status = spent + " / " + format_inr(item.budget_paise)
+                    badge_style = "color:#059669;"
                 progress = min(100, item.percent_used or 0)
                 rows.append(
                     f'''
                     <div class="budget-preview-item">
                       <div class="budget-preview-label">
                         <span class="budget-dot" style="background:{color}" aria-hidden="true">{html.escape(item.category[:1])}</span>
-                        <span>{html.escape(item.category)}</span><small>{status}</small>
+                        <span>{html.escape(item.category)}</span><small style="{badge_style}">{status}</small>
                       </div>
                       <div class="budget-progress-track" aria-hidden="true">
                         <div class="budget-progress-fill" style="width:{progress}%;background:{color}"></div>
@@ -709,6 +845,11 @@ if st.session_state.active_nav == "Overview":
                     '''
                 )
             st.html('<div class="budget-preview">' + "".join(rows) + '</div>')
+            if len(comparisons) > 5:
+                st.caption(f"Showing 5 of {len(comparisons)} categories.")
+            if st.button("Manage all budgets →", key="btn_goto_budgets", width="stretch"):
+                st.session_state.active_nav = "Budgets"
+                st.rerun()
         else:
             st.caption("Set a budget to track spending against a target.")
 
@@ -723,113 +864,220 @@ if st.session_state.active_nav == "Overview":
 
 
 # =============================================================================
-# VIEW 2: TRANSACTIONS
+# VIEW 2: TRANSACTIONS & CSV WORKFLOWS
 # =============================================================================
 elif st.session_state.active_nav == "Transactions":
-    st.subheader(f"Transactions — {datetime.strptime(st.session_state.selected_month, '%Y-%m').strftime('%B %Y')}")
-    st.caption("Browse, search, edit categories, and record student financial entries.")
+    month_name = datetime.strptime(st.session_state.selected_month, "%Y-%m").strftime("%B %Y")
+    
+    t_head_col, t_act_col = st.columns([7, 3], vertical_alignment="center")
+    with t_head_col:
+        st.subheader(f"Transactions — {month_name}")
+        st.caption("Browse, filter, edit categories, and record student financial entries.")
+    with t_act_col:
+        add_clicked = st.button("➕ Add Transaction", type="primary", width="stretch")
+        if add_clicked:
+            st.session_state.show_add_tx = not st.session_state.get("show_add_tx", False)
 
-    # Top Filters & Add Transaction Expander
-    f_cols = st.columns([2, 2, 3])
-    with f_cols[0]:
-        type_filter = st.selectbox("Type", options=["All", "income", "expense", "transfer"])
-    with f_cols[1]:
-        cat_filter = st.selectbox("Category", options=["All"] + sorted(list(ALLOWED_EXPENSE_CATEGORIES)) + ["Income", "Transfer"])
+    # Focused Add Transaction Editor
+    if st.session_state.get("show_add_tx", False):
+        with st.container(border=True):
+            st.markdown("#### Record New Transaction")
+            with st.form("add_tx_form", clear_on_submit=False):
+                a_col1, a_col2 = st.columns([2, 2])
+                with a_col1:
+                    default_date = date.today()
+                    try:
+                        # Default date aligned with selected month
+                        default_date = date(int(st.session_state.selected_month[:4]), int(st.session_state.selected_month[5:7]), 15)
+                    except Exception:
+                        pass
+                    tx_date = st.date_input("Date", value=default_date)
+                    tx_type = st.selectbox("Type", options=["expense", "income", "transfer"])
+                with a_col2:
+                    tx_amount = st.text_input("Amount in INR (₹)", placeholder="e.g. 150.00")
+                    if tx_type == "expense":
+                        tx_cat = st.selectbox(
+                            "Category",
+                            options=["(Let AI Suggest Category)"] + sorted(list(ALLOWED_EXPENSE_CATEGORIES)),
+                        )
+                    elif tx_type == "income":
+                        tx_cat = "Income"
+                        st.text_input("Category", value="Income", disabled=True)
+                    else:
+                        tx_cat = "Transfer"
+                        st.text_input("Category", value="Transfer", disabled=True)
 
-    with st.expander("➕ Add New Transaction"):
-        with st.form("add_tx_form", clear_on_submit=True):
-            a_cols = st.columns([1.5, 3, 1.5, 1.5, 2])
-            with a_cols[0]:
-                tx_date = st.date_input("Date", value=date.today())
-            with a_cols[1]:
-                tx_desc = st.text_input("Description", placeholder="e.g. Canteen lunch or Bus fare")
-            with a_cols[2]:
-                tx_amount = st.text_input("Amount (₹)", placeholder="150.00")
-            with a_cols[3]:
-                tx_type = st.selectbox("Type", options=["expense", "income", "transfer"])
-            with a_cols[4]:
-                tx_cat = st.selectbox("Category (Optional for AI Suggestion)", options=["(Let AI Suggest)"] + sorted(list(ALLOWED_EXPENSE_CATEGORIES)))
+                tx_desc = st.text_input("Description", placeholder="e.g. University canteen thali, Semester book purchase")
 
-            submitted = st.form_submit_button("Record Transaction", type="primary")
-            if submitted:
-                try:
-                    paise = parse_amount_to_paise(tx_amount)
-                    iso_date = tx_date.isoformat()
+                f_btn_col1, f_btn_col2 = st.columns([2, 8])
+                with f_btn_col1:
+                    submit_tx = st.form_submit_button("Record Transaction", type="primary", width="stretch")
+                with f_btn_col2:
+                    cancel_add = st.form_submit_button("Cancel", width="stretch")
+
+                if cancel_add:
+                    st.session_state.show_add_tx = False
+                    st.rerun()
+
+                if submit_tx:
                     clean_desc = tx_desc.strip()
                     if not clean_desc:
                         st.error("Description cannot be empty.")
                     else:
-                        gen_id = f"TX-{datetime.now().strftime('%Y%m%d%H%M%S%f')[:17]}"
-                        final_cat = ""
-                        cat_src = "manual"
-                        status = "confirmed"
-                        score = None
-
-                        if tx_type == "income":
-                            final_cat = "Income"
-                        elif tx_type == "transfer":
-                            final_cat = "Transfer"
-                        else:
-                            if tx_cat == "(Let AI Suggest)":
-                                pred = categorizer.predict(clean_desc)
-                                final_cat = pred.category
-                                cat_src = "model"
-                                status = pred.review_status
-                                score = pred.model_score
+                        try:
+                            paise = parse_amount_to_paise(tx_amount)
+                            if paise <= 0:
+                                st.error("Amount must be greater than zero.")
                             else:
-                                final_cat = tx_cat
+                                iso_date = tx_date.isoformat()
+                                gen_id = f"TX-{datetime.now().strftime('%Y%m%d%H%M%S%f')[:17]}"
+                                final_cat = ""
+                                cat_src = "manual"
+                                status = "confirmed"
+                                score = None
 
-                        fp = compute_fingerprint(iso_date, clean_desc, paise, tx_type)
-                        new_tx = Transaction(
-                            id=gen_id,
-                            date=iso_date,
-                            description=clean_desc,
-                            amount_paise=paise,
-                            type=tx_type,
-                            category=final_cat,
-                            category_source=cat_src,
-                            review_status=status,
-                            model_score=score,
-                            fingerprint=fp,
-                        )
-                        db.add_transaction(new_tx)
-                        st.success(f"Transaction recorded! Assigned category: {final_cat}")
-                        st.rerun()
-                except Exception as e:
-                    st.error(f"Error: {e}")
+                                if tx_type == "income":
+                                    final_cat = "Income"
+                                elif tx_type == "transfer":
+                                    final_cat = "Transfer"
+                                else:
+                                    if tx_cat == "(Let AI Suggest Category)":
+                                        pred = categorizer.predict(clean_desc)
+                                        final_cat = pred.category
+                                        cat_src = "model"
+                                        status = pred.review_status
+                                        score = pred.model_score
+                                    else:
+                                        final_cat = tx_cat
+
+                                fp = compute_fingerprint(iso_date, clean_desc, paise, tx_type)
+                                new_tx = Transaction(
+                                    id=gen_id,
+                                    date=iso_date,
+                                    description=clean_desc,
+                                    amount_paise=paise,
+                                    type=tx_type,
+                                    category=final_cat,
+                                    category_source=cat_src,
+                                    review_status=status,
+                                    model_score=score,
+                                    fingerprint=fp,
+                                )
+                                db.add_transaction(new_tx)
+                                st.session_state.show_add_tx = False
+                                
+                                # Inform if transaction date is outside currently active month
+                                tx_month = iso_date[:7]
+                                if tx_month != st.session_state.selected_month:
+                                    st.info(f"Transaction recorded for {iso_date}! Note: This entry is in {tx_month}, outside your currently viewed month ({st.session_state.selected_month}).")
+                                else:
+                                    st.toast(f"Transaction recorded! Assigned category: {final_cat}")
+                                st.rerun()
+                        except Exception as e:
+                            st.error(f"Error parsing amount: {e}")
+
+    # Consolidated Filter Area
+    with st.container(border=True):
+        flt_c1, flt_c2, flt_c3, flt_c4 = st.columns([2.5, 2.5, 2.5, 2.5])
+        with flt_c1:
+            tx_type_options = ["All", "expense", "income", "transfer"]
+            cur_type_idx = tx_type_options.index(st.session_state.tx_type_filter) if st.session_state.tx_type_filter in tx_type_options else 0
+            selected_type = st.selectbox("Type", options=tx_type_options, index=cur_type_idx, key="tx_type_filter")
+        with flt_c2:
+            cat_options = ["All"] + sorted(list(ALLOWED_EXPENSE_CATEGORIES)) + ["Income", "Transfer"]
+            cur_cat_idx = cat_options.index(st.session_state.tx_cat_filter) if st.session_state.tx_cat_filter in cat_options else 0
+            selected_cat = st.selectbox("Category", options=cat_options, index=cur_cat_idx, key="tx_cat_filter")
+        with flt_c3:
+            rev_options = ["All", "needs_review", "confirmed"]
+            cur_rev_idx = rev_options.index(st.session_state.tx_review_filter) if st.session_state.tx_review_filter in rev_options else 0
+            selected_rev = st.selectbox("Review Status", options=rev_options, index=cur_rev_idx, key="tx_review_filter")
+        with flt_c4:
+            sort_order = st.selectbox("Sort Order", options=["Date: Newest First", "Date: Oldest First", "Amount: Highest First", "Amount: Lowest First"])
+
+        active_chips = []
+        if selected_type != "All":
+            active_chips.append(f"Type: {selected_type}")
+        if selected_cat != "All":
+            active_chips.append(f"Category: {selected_cat}")
+        if selected_rev != "All":
+            active_chips.append(f"Status: {selected_rev}")
+        if st.session_state.search_query.strip():
+            active_chips.append(f'Search: "{st.session_state.search_query.strip()}"')
+
+        ch_col, rst_col = st.columns([8, 2], vertical_alignment="center")
+        with ch_col:
+            if active_chips:
+                st.html(f'<span style="font-size:12px; color:#475569;">Active Filters: <b>{" • ".join(active_chips)}</b></span>')
+            else:
+                st.html('<span style="font-size:12px; color:#64748B;">Showing all records for selected month.</span>')
+        with rst_col:
+            if active_chips:
+                if st.button("Reset Filters", width="stretch"):
+                    st.session_state.tx_type_filter = "All"
+                    st.session_state.tx_cat_filter = "All"
+                    st.session_state.tx_review_filter = "All"
+                    st.session_state.search_query = ""
+                    st.rerun()
 
     # Query matching records
     matching_txs = db.get_transactions(
         year_month=st.session_state.selected_month,
-        category=cat_filter if cat_filter != "All" else None,
-        tx_type=type_filter if type_filter != "All" else None,
+        category=selected_cat if selected_cat != "All" else None,
+        tx_type=selected_type if selected_type != "All" else None,
+        review_status=selected_rev if selected_rev != "All" else None,
         search_query=st.session_state.search_query.strip() or None,
     )
 
+    # Sort matching records
+    if sort_order == "Date: Oldest First":
+        matching_txs = sorted(matching_txs, key=lambda t: (t.date, t.id))
+    elif sort_order == "Amount: Highest First":
+        matching_txs = sorted(matching_txs, key=lambda t: t.amount_paise, reverse=True)
+    elif sort_order == "Amount: Lowest First":
+        matching_txs = sorted(matching_txs, key=lambda t: t.amount_paise)
+    else:  # Date: Newest First
+        matching_txs = sorted(matching_txs, key=lambda t: (t.date, t.id), reverse=True)
+
     if matching_txs:
-        st.write(f"Showing **{len(matching_txs)}** transactions.")
-        # Tabular representation with inline category correction
+        st.write(f"Showing **{len(matching_txs)}** transaction(s).")
+
+        # Table Header
+        h_cols = st.columns([1.5, 3.8, 1.6, 1.2, 2.4, 1.5])
+        with h_cols[0]:
+            st.markdown('<div class="ledger-header">Date</div>', unsafe_allow_html=True)
+        with h_cols[1]:
+            st.markdown('<div class="ledger-header">Description &amp; Status</div>', unsafe_allow_html=True)
+        with h_cols[2]:
+            st.markdown('<div class="ledger-header">Amount</div>', unsafe_allow_html=True)
+        with h_cols[3]:
+            st.markdown('<div class="ledger-header">Type</div>', unsafe_allow_html=True)
+        with h_cols[4]:
+            st.markdown('<div class="ledger-header">Category</div>', unsafe_allow_html=True)
+        with h_cols[5]:
+            st.markdown('<div class="ledger-header">Action</div>', unsafe_allow_html=True)
+
         for tx in matching_txs:
             with st.container(border=True):
-                r_cols = st.columns([1.2, 3.5, 1.5, 1.2, 2.2, 1.2])
+                r_cols = st.columns([1.5, 3.8, 1.6, 1.2, 2.4, 1.5], vertical_alignment="center")
                 with r_cols[0]:
                     st.write(f"**{tx.date}**")
-                    st.caption(tx.id)
+                    st.html(f'<span style="font-size:10px; color:#94A3B8; font-family:monospace;" title="{tx.id}">{tx.id[:12]}…</span>')
                 with r_cols[1]:
                     st.write(html.escape(tx.description))
                     badge = f'<span class="badge-review">Review ({tx.model_score:.2f})</span>' if tx.review_status == "needs_review" else '<span class="badge-confirmed">Confirmed</span>'
                     st.html(f'<span style="font-size:11px; color:#7A8499;">Source: {tx.category_source} • {badge}</span>')
                 with r_cols[2]:
-                    st.write(f"**{format_inr(tx.amount_paise)}**")
+                    amt_color = "#059669" if tx.type == "income" else ("#182263" if tx.type == "expense" else "#3B82F6")
+                    st.html(f'<span style="font-weight:700; color:{amt_color}; font-variant-numeric:tabular-nums;">{format_inr(tx.amount_paise)}</span>')
                 with r_cols[3]:
-                    st.write(f"`{tx.type}`")
+                    st.code(tx.type, language=None)
                 with r_cols[4]:
                     if tx.type == "expense":
-                        cat_options = sorted(list(ALLOWED_EXPENSE_CATEGORIES))
-                        cur_idx = cat_options.index(tx.category) if tx.category in cat_options else 0
+                        cat_opts = sorted(list(ALLOWED_EXPENSE_CATEGORIES))
+                        cur_idx = cat_opts.index(tx.category) if tx.category in cat_opts else 0
                         new_cat = st.selectbox(
-                            "Edit Cat",
-                            options=cat_options,
+                            "Category",
+                            options=cat_opts,
                             index=cur_idx,
                             key=f"edit_cat_{tx.id}",
                             label_visibility="collapsed",
@@ -841,89 +1089,194 @@ elif st.session_state.active_nav == "Transactions":
                     else:
                         st.write(f"*{tx.category}*")
                 with r_cols[5]:
-                    if st.button("Delete", key=f"del_{tx.id}"):
-                        db.delete_transaction(tx.id)
-                        st.toast(f"Deleted {tx.id}")
-                        st.rerun()
+                    del_key = f"del_confirm_{tx.id}"
+                    if not st.session_state.get(del_key, False):
+                        if st.button("Delete", key=f"btn_del_{tx.id}", type="secondary", width="stretch"):
+                            st.session_state[del_key] = True
+                            st.rerun()
+                    else:
+                        st.error("Delete?")
+                        d_c1, d_c2 = st.columns(2)
+                        with d_c1:
+                            if st.button("Yes", key=f"conf_yes_{tx.id}", type="primary"):
+                                db.delete_transaction(tx.id)
+                                st.session_state[del_key] = False
+                                st.toast(f"Deleted {tx.description}")
+                                st.rerun()
+                        with d_c2:
+                            if st.button("No", key=f"conf_no_{tx.id}"):
+                                st.session_state[del_key] = False
+                                st.rerun()
     else:
-        st.info("No transactions match the selected criteria.")
+        st.info("No transactions match the selected criteria for this month.")
 
 
 # =============================================================================
 # VIEW 3: BUDGETS
 # =============================================================================
 elif st.session_state.active_nav == "Budgets":
-    st.subheader(f"Category Budgets — {datetime.strptime(st.session_state.selected_month, '%Y-%m').strftime('%B %Y')}")
-    st.caption("Configure category targets and review deterministic spending rebalancing suggestions.")
+    month_name = datetime.strptime(st.session_state.selected_month, "%Y-%m").strftime("%B %Y")
+    
+    b_head_col, b_act_col = st.columns([7, 3], vertical_alignment="center")
+    with b_head_col:
+        st.subheader(f"Category Budgets — {month_name}")
+        st.caption("Configure category targets, track utilization, and review deterministic spending rebalancing suggestions.")
+    with b_act_col:
+        edit_budgets_clicked = st.button("✏️ Configure Budgets", type="primary", width="stretch")
+        if edit_budgets_clicked:
+            st.session_state.show_budget_editor = not st.session_state.get("show_budget_editor", False)
 
     summary = calculate_monthly_summary(all_txs_for_month, st.session_state.selected_month)
     current_budgets = db.get_budgets(st.session_state.selected_month)
-    comparisons = calculate_budget_comparisons(summary.expense_by_category_paise, current_budgets)
 
-    b_left, b_right = st.columns([5, 5])
-
-    with b_left:
+    # Budget Configuration Editor
+    if st.session_state.get("show_budget_editor", False):
         with st.container(border=True):
-            st.write("#### Configure Monthly Budgets")
-            st.caption("Amounts are in Indian Rupees (₹).")
+            st.markdown("#### Set Monthly Category Targets")
+            st.caption("Check 'Has Target' to set a budget limit in Rupees (₹). Uncheck to remove target ('No Target').")
             with st.form("set_budgets_form"):
-                budget_inputs = {}
+                budget_entries = {}
                 for cat in sorted(list(ALLOWED_EXPENSE_CATEGORIES)):
-                    cur_paise = current_budgets.get(cat, 0)
-                    cur_inr = cur_paise / 100.0 if cur_paise else 0.0
-                    budget_inputs[cat] = st.number_input(
-                        f"{cat} Budget (₹)",
-                        min_value=0.0,
-                        value=float(cur_inr),
-                        step=100.0,
-                    )
-                saved = st.form_submit_button("Save Budgets", type="primary")
-                if saved:
-                    for cat, val in budget_inputs.items():
-                        paise_val = int(round(val * 100))
-                        db.set_budget(st.session_state.selected_month, cat, paise_val)
-                    st.success("Budgets updated successfully!")
+                    cur_paise = current_budgets.get(cat)
+                    has_target_default = cur_paise is not None
+                    cur_inr = float(cur_paise / 100.0) if cur_paise is not None else 0.0
+
+                    c_check, c_input = st.columns([2, 5])
+                    with c_check:
+                        has_target = st.checkbox(f"Track {cat}", value=has_target_default, key=f"chk_target_{cat}")
+                    with c_input:
+                        val = st.number_input(
+                            f"{cat} Target (₹)",
+                            min_value=0.0,
+                            value=cur_inr,
+                            step=100.0,
+                            disabled=not has_target,
+                            key=f"num_target_{cat}",
+                        )
+                    budget_entries[cat] = (has_target, val)
+
+                b_btn1, b_btn2 = st.columns([2, 8])
+                with b_btn1:
+                    save_budgets = st.form_submit_button("Save Budgets", type="primary", width="stretch")
+                with b_btn2:
+                    cancel_budgets = st.form_submit_button("Cancel", width="stretch")
+
+                if cancel_budgets:
+                    st.session_state.show_budget_editor = False
                     st.rerun()
 
-    with b_right:
+                if save_budgets:
+                    for cat, (has_target, val) in budget_entries.items():
+                        if has_target:
+                            paise_val = int(round(val * 100))
+                            db.set_budget(st.session_state.selected_month, cat, paise_val)
+                        else:
+                            db.delete_budget(st.session_state.selected_month, cat)
+                    st.session_state.show_budget_editor = False
+                    st.toast("Budgets updated successfully!")
+                    st.rerun()
+
+    # Re-calculate comparisons after any potential changes
+    current_budgets = db.get_budgets(st.session_state.selected_month)
+    comparisons = calculate_budget_comparisons(summary.expense_by_category_paise, current_budgets)
+
+    # Cohesive Unified Budget Cards List
+    st.markdown("#### Category Budget Utilization & Recommendations")
+    for comp in comparisons:
         with st.container(border=True):
-            st.write("#### Spending vs Target Analysis")
-            for comp in comparisons:
-                icon = "⚠️" if comp.is_over else "✅"
-                st.write(f"**{icon} {comp.category}**")
-                pct_str = f"{comp.percent_used:.1f}%" if comp.percent_used is not None else "N/A"
-                b_str = format_inr(comp.budget_paise) if comp.budget_paise is not None else "Not set"
-                st.write(f"• Spent: **{format_inr(comp.spent_paise)}** | Budget: **{b_str}** ({pct_str})")
-                st.caption(f"Suggestion: {comp.suggestion}")
-                st.divider()
+            b_top1, b_top2 = st.columns([6, 4], vertical_alignment="center")
+            with b_top1:
+                st.markdown(f"### {comp.category}")
+            with b_top2:
+                if comp.budget_paise is None:
+                    st.html('<div style="text-align:right;"><span class="badge-secondary" style="padding:4px 8px; border-radius:6px; background:#F1F5F9; color:#64748B; font-size:11px; font-weight:600;">⚪ No Target Set</span></div>')
+                elif comp.is_over:
+                    st.html(f'<div style="text-align:right;"><span class="badge-overbudget">⚠️ Exceeded by {format_inr(comp.delta_paise)}</span></div>')
+                else:
+                    st.html('<div style="text-align:right;"><span class="badge-confirmed">✅ Within Budget</span></div>')
+
+            # Metric triplets: Target | Spent | Balance
+            m_col1, m_col2, m_col3 = st.columns(3)
+            with m_col1:
+                target_str = format_inr(comp.budget_paise) if comp.budget_paise is not None else "No target"
+                st.metric("Target Budget", target_str)
+            with m_col2:
+                st.metric("Actual Spend", format_inr(comp.spent_paise))
+            with m_col3:
+                if comp.budget_paise is not None:
+                    remaining_paise = comp.budget_paise - comp.spent_paise
+                    rem_label = "Remaining" if remaining_paise >= 0 else "Overspend"
+                    st.metric(rem_label, format_inr(remaining_paise))
+                else:
+                    st.metric("Balance", "N/A")
+
+            # Bounded progress track
+            progress = min(100.0, comp.percent_used or 0.0)
+            fill_color = "#EF4444" if comp.is_over else "#10B981"
+            pct_label = f"{comp.percent_used:.1f}% used" if comp.percent_used is not None else "No target set"
+
+            st.html(
+                f'''
+                <div style="margin: 8px 0 4px 0;">
+                    <div style="display:flex; justify-content:space-between; font-size:11px; color:#64748B;">
+                        <span>Progress</span>
+                        <span><b>{pct_label}</b></span>
+                    </div>
+                    <div class="budget-progress-track">
+                        <div class="budget-progress-fill" style="width:{progress}%; background:{fill_color};"></div>
+                    </div>
+                </div>
+                '''
+            )
+            st.caption(f"💡 **Suggestion:** {comp.suggestion}")
 
 
 # =============================================================================
 # VIEW 4: CATEGORY REVIEW
 # =============================================================================
 elif st.session_state.active_nav == "Category Review":
-    st.subheader("AI Category Review")
-    st.caption("Review low-confidence or vocabulary-uncertain AI predictions and verify them.")
+    scope_mode = st.session_state.get("review_scope", "All Records")
+    month_name = datetime.strptime(st.session_state.selected_month, "%Y-%m").strftime("%B %Y")
+    
+    if scope_mode == "Current Month":
+        pending_txs = db.get_transactions(year_month=st.session_state.selected_month, review_status="needs_review")
+        scope_desc = f"Showing unconfirmed expenses for {month_name}"
+    else:
+        pending_txs = db.get_transactions(review_status="needs_review")
+        scope_desc = "Showing unconfirmed expenses across all dates"
 
-    pending_txs = db.get_transactions(review_status="needs_review")
+    st.subheader("AI Category Review Queue")
+    st.caption(f"{scope_desc}. Verify or adjust predicted categories.")
 
     if not pending_txs:
-        st.success("🎉 All transaction categories are confirmed! No items require review.")
+        st.success("🎉 All transaction categories in this scope are confirmed! Zero items require review.")
+        st.html(
+            """
+            <div style="text-align:center; padding: 40px 10px; color:#5A6478;">
+                <div style="font-size: 32px; margin-bottom: 8px;">✨</div>
+                <div style="font-size: 15px; font-weight: 600; color: #182263;">Queue is Completely Clear</div>
+                <div style="font-size: 12.5px; color: #64748B; margin-top: 4px;">
+                    When you import new expenses with unfamiliar descriptions, they will appear here for verification.
+                </div>
+            </div>
+            """
+        )
     else:
         st.warning(f"**{len(pending_txs)}** transaction(s) require human review or confirmation.")
 
         for tx in pending_txs:
             with st.container(border=True):
-                c_cols = st.columns([1.5, 4, 2, 2.5, 1.5])
+                c_cols = st.columns([1.5, 4.2, 1.6, 2.7, 2.0], vertical_alignment="center")
                 with c_cols[0]:
                     st.write(f"**{tx.date}**")
-                    st.caption(tx.id)
+                    st.html(f'<span style="font-size:10px; color:#94A3B8; font-family:monospace;">{tx.id[:12]}…</span>')
                 with c_cols[1]:
-                    st.write(html.escape(tx.description))
-                    score_str = f"Score: {tx.model_score:.2f}" if tx.model_score else "Score: N/A"
-                    st.caption(f"Flagged by AI: {score_str} • Category: `{tx.category}`")
+                    st.write(f"**{html.escape(tx.description)}**")
+                    score_str = f"Model Score: {tx.model_score:.2f} (Uncalibrated ML confidence)" if tx.model_score is not None else "Model Score: N/A"
+                    reason = "Flagged because model confidence is below the review threshold (0.25). Likely contains unfamiliar or ambiguous keywords."
+                    st.html(f'<div style="font-size:11px; color:#64748B;">{score_str}</div><div style="font-size:11px; color:#D97706; margin-top:2px;">⚠️ {reason}</div>')
                 with c_cols[2]:
-                    st.write(f"**{format_inr(tx.amount_paise)}**")
+                    st.html(f'<span style="font-weight:700; color:#182263; font-variant-numeric:tabular-nums;">{format_inr(tx.amount_paise)}</span>')
                 with c_cols[3]:
                     cat_options = sorted(list(ALLOWED_EXPENSE_CATEGORIES))
                     cur_idx = cat_options.index(tx.category) if tx.category in cat_options else 0
@@ -935,18 +1288,24 @@ elif st.session_state.active_nav == "Category Review":
                         label_visibility="collapsed",
                     )
                 with c_cols[4]:
-                    if st.button("Confirm", key=f"btn_confirm_{tx.id}", type="primary"):
+                    btn_confirm = st.button("Confirm Category", key=f"btn_confirm_{tx.id}", type="primary", width="stretch")
+                    if btn_confirm:
                         db.update_transaction_category(tx.id, chosen_cat, review_status="confirmed", category_source="manual")
                         st.toast(f"Confirmed {tx.id} as {chosen_cat}")
                         st.rerun()
 
 
 # =============================================================================
-# VIEW 5: MODEL EVALUATION
+# VIEW 5: MODEL EVALUATION & TRANSPARENCY
 # =============================================================================
 elif st.session_state.active_nav == "Model Evaluation":
     st.subheader("Machine Learning Model Evaluation & Transparency")
-    st.caption("Honest reporting on offline TF-IDF + Logistic Regression performance against held-out data.")
+    st.caption("Empirical reporting on offline TF-IDF + Logistic Regression classification against an untouched holdout dataset.")
+
+    st.info(
+        "📌 **Offline Evaluation Notice:** The statistics and matrix below evaluate the categorizer on an independent, "
+        "synthetic holdout validation set of 18 student transactions. These metrics do not reflect the active monthly ledger."
+    )
 
     eval_json_path = Path("reports/model_evaluation.json")
     if eval_json_path.exists():
@@ -959,21 +1318,54 @@ elif st.session_state.active_nav == "Model Evaluation":
 
         e_cols = st.columns(4)
         with e_cols[0]:
-            st.metric("Training Samples", meta.get("training_samples", 0))
+            st.metric("Training Samples", meta.get("training_samples", 0), help="Number of verified examples in training split")
         with e_cols[1]:
-            st.metric("Holdout Samples", meta.get("holdout_samples", 0))
+            st.metric("Holdout Samples", meta.get("holdout_samples", 0), help="Independent holdout validation examples")
         with e_cols[2]:
-            st.metric("Overall Accuracy", f"{metrics.get('overall_accuracy', 0.0) * 100:.1f}%")
+            st.metric("Overall Accuracy", f"{metrics.get('overall_accuracy', 0.0) * 100:.1f}%", help="Correct classifications over all 18 holdout examples")
         with e_cols[3]:
-            st.metric("Abstention Rate", f"{metrics.get('abstention_rate', 0.0) * 100:.1f}%")
+            st.metric("Abstention Rate", f"{metrics.get('abstention_rate', 0.0) * 100:.1f}%", help="Percentage of examples routed to human review (below 0.25 confidence)")
 
-        st.write("")
-        st.write("#### Per-Category Holdout Performance")
-        per_cat_df = pd.DataFrame.from_dict(per_cat, orient="index")
-        st.dataframe(per_cat_df, width="stretch")
+        m_sub1, m_sub2, m_sub3, m_sub4 = st.columns(4)
+        with m_sub1:
+            st.metric("Model Coverage", f"{metrics.get('coverage', 0.0) * 100:.1f}%")
+        with m_sub2:
+            non_abstained = metrics.get("non_abstained", 0)
+            correct_na = metrics.get("correct_non_abstained", 0)
+            na_acc = (correct_na / non_abstained * 100.0) if non_abstained > 0 else 0.0
+            st.metric("Non-Abstained Accuracy", f"{na_acc:.1f}%", help="Accuracy on examples the model chose to predict")
+        with m_sub3:
+            st.metric("Confidence Threshold", f"{meta.get('confidence_threshold', 0.25):.2f}")
+        with m_sub4:
+            st.metric("Classification Model", "TF-IDF + LogReg")
 
-        st.write("#### Methodological Disclosures & Limitations")
-        for lim in report_data.get("honest_limitations", []):
-            st.write(f"• {lim}")
+        st.markdown("#### Per-Category Holdout Performance")
+        st.caption("Breakdown of precision, recall, and support across expense categories.")
+
+        table_rows = []
+        for cat, data in per_cat.items():
+            supp = data.get("support", 0)
+            prec = data.get("precision", 0.0)
+            rec = data.get("recall", 0.0)
+            f1 = data.get("f1_score", 0.0)
+            table_rows.append({
+                "Category": cat,
+                "Holdout Support": supp,
+                "Precision": f"{prec * 100:.1f}%" if supp > 0 else "N/A",
+                "Recall": f"{rec * 100:.1f}%" if supp > 0 else "N/A",
+                "F1-Score": f"{f1 * 100:.1f}%" if supp > 0 else "N/A",
+            })
+        st.dataframe(pd.DataFrame(table_rows), width="stretch", hide_index=True)
+
+        with st.expander("📖 Methodological Disclosures & Honest Limitations"):
+            st.markdown(
+                """
+                - **Explainability First:** The model combines a linear classifier with an explicit vocabulary coverage check. When descriptions contain out-of-vocabulary or ambiguous tokens, it routes them to human review rather than hallucinating categories.
+                - **Why Accuracy is 27.8%:** Standard logistic regression without abstention forces a guess on every token. With our safety threshold (0.25), 72.2% of holdout examples abstain to review. On non-abstained predictions, accuracy is **100.0%**.
+                - **Privacy Sovereignty:** All inference is executed locally using `scikit-learn`. Zero transaction text or telemetry leaves the device.
+                """
+            )
+            for lim in report_data.get("honest_limitations", []):
+                st.write(f"• {lim}")
     else:
         st.info("Evaluation report not found. Run `python scripts/evaluate_model.py` to generate it.")

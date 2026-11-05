@@ -268,7 +268,7 @@ function polar(cx, cy, radius, angle) {
     return [cx + radius * Math.sin(angle), cy - radius * Math.cos(angle)];
 }
 
-function renderDonut(root, rows, width, id) {
+function renderDonut(root, rows, width, id, { drillDown } = {}) {
     const height = width < 220 ? 174 : 194;
     const cx = width / 2, cy = height / 2, radius = Math.min(height * .36, (width - 65) / 2);
     const { svg, defs } = makePlot(root, width, height, "Expenses by category");
@@ -341,6 +341,35 @@ function renderDonut(root, rows, width, id) {
         button.append(document.createTextNode(row.Category));
         return button;
     });
+    const actions = element(root, "div", "donut-actions");
+    actions.style.display = "none";
+    actions.style.marginTop = "8px";
+    actions.style.justifyContent = "center";
+    actions.style.alignItems = "center";
+    actions.style.gap = "6px";
+
+    const drillBtn = element(actions, "button", "donut-drill-btn");
+    drillBtn.type = "button";
+    drillBtn.style.cssText = "background: #5149ef; color: white; border: none; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s ease;";
+    drillBtn.textContent = "View transactions →";
+
+    const clearBtn = element(actions, "button", "donut-clear-btn");
+    clearBtn.type = "button";
+    clearBtn.style.cssText = "background: #eef2f7; color: #535e7a; border: none; border-radius: 6px; padding: 4px 8px; font-size: 11px; cursor: pointer;";
+    clearBtn.textContent = "Clear";
+
+    clearBtn.addEventListener("click", () => {
+        pinned = -1;
+        highlight(-1);
+    });
+
+    drillBtn.addEventListener("click", () => {
+        if (pinned >= 0 && slices[pinned]) {
+            const cat = slices[pinned].row.Category;
+            if (drillDown) drillDown(cat);
+        }
+    });
+
     let pinned = -1;
     const highlight = (index) => {
         const selected = slices[index];
@@ -353,6 +382,12 @@ function renderDonut(root, rows, width, id) {
             segment.classList.toggle("muted", index !== -1 && index !== i);
             buttons[i].setAttribute("aria-pressed", String(pinned === i));
         });
+        if (pinned >= 0 && slices[pinned]) {
+            actions.style.display = "flex";
+            drillBtn.textContent = `View ${slices[pinned].row.Category} transactions →`;
+        } else {
+            actions.style.display = "none";
+        }
     };
     for (const [i, { segment }] of slices.entries()) {
         const button = buttons[i];
@@ -489,6 +524,7 @@ export default function mountChart({ data, parentElement, setTriggerValue }) {
         renderer(root, rows, width, id, {
             selectedMonth: data.selectedMonth,
             selectMonth: (month) => setTriggerValue("month_selected", month),
+            drillDown: (category) => setTriggerValue("category_drilldown", category),
         });
     };
     render();

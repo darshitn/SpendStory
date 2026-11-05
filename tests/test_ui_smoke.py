@@ -35,3 +35,13 @@ def test_app_navigation_and_views():
     assert not at.exception
     assert at.sidebar.radio(key="active_nav").value == "Transactions"
     assert at.query_params["nav"] == "Transactions"
+
+
+def test_drilldown_and_filtering():
+    at = AppTest.from_file(APP_PATH, default_timeout=30)
+    at.query_params.update(nav="Transactions", month="2026-10")
+    at.session_state["tx_cat_filter"] = "Food"
+    at.session_state["tx_type_filter"] = "expense"
+    at.run()
+    assert not at.exception
+    assert at.sidebar.radio(key="active_nav").value == "Transactions"

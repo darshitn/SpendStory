@@ -312,6 +312,17 @@ class Database:
             )
             conn.commit()
 
+    def delete_budget(self, year_month: str, category: str) -> bool:
+        """Remove a budget target for a category in a month (sets to No Target)."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "DELETE FROM budgets WHERE year_month = ? AND category = ?",
+                (year_month, category),
+            )
+            conn.commit()
+            return cursor.rowcount > 0
+
     def get_budgets(self, year_month: str) -> dict[str, int]:
         """Return dict of {category: budget_paise} for a given month."""
         with self.get_connection() as conn:

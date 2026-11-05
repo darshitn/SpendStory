@@ -21,8 +21,19 @@ def render_trend(rows: Sequence[dict], *, key: str = "dashboard_trend") -> None:
 
 
 def render_donut(rows: Sequence[dict], *, key: str = "dashboard_donut") -> None:
-    """Render expense records with Category and Amount fields."""
-    _CHART(key=key, data={"kind": "donut", "rows": list(rows)})
+    """Render expense records with Category and Amount fields and enable drill-down."""
+    def drill_down() -> None:
+        cat = getattr(st.session_state[key], "category_drilldown", None)
+        if isinstance(cat, str) and cat:
+            st.session_state.active_nav = "Transactions"
+            st.session_state.tx_type_filter = "expense"
+            st.session_state.tx_cat_filter = cat
+
+    _CHART(
+        key=key,
+        data={"kind": "donut", "rows": list(rows)},
+        on_category_drilldown_change=drill_down,
+    )
 
 
 def render_monthly(rows: Sequence[dict], *, selected_month: str, key: str) -> None:

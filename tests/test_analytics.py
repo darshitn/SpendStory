@@ -137,3 +137,46 @@ def test_sanitize_and_safe_csv_export():
     ]
     csv_str = export_transactions_to_csv(txs)
     assert "'=1+1 malicious formula" in csv_str
+
+
+def test_budget_no_target_and_zero_target():
+    spent = {"Food": 250000, "Books": 100000, "Shopping": 50000}
+    budgets = {"Food": 200000, "Shopping": 0}  # Books has no target; Shopping has intentional zero target
+
+    comps = calculate_budget_comparisons(spent, budgets)
+    comp_map = {c.category: c for c in comps}
+
+    # Books has no target set
+    books_comp = comp_map["Books"]
+    assert books_comp.budget_paise is None
+    assert books_comp.is_over is False
+    assert "No budget set for Books" in books_comp.suggestion
+
+    # Shopping has intentional zero target and spent 50000 -> is_over
+    shop_comp = comp_map["Shopping"]
+    assert shop_comp.budget_paise == 0
+    assert shop_comp.is_over is True
+    assert shop_comp.delta_paise == 50000
+    assert "Reduce Shopping by ₹500.00" in shop_comp.suggestion
+
+
+def test_deficit_summary_and_trend_edge_cases():
+    # Deficit: Expenses exceed income
+    txs = [
+        Transaction(id="T1", date="2026-10-05", description="Allowance", amount_paise=500000, type="income", category="Income"),
+        Transaction(id="T2", date="2026-10-10", description="Fees", amount_paise=800000, type="expense", category="Education"),
+    ]
+    summary = calculate_monthly_summary(txs, "2026-10")
+    assert summary.income_paise == 500000
+    assert summary.expense_paise == 800000
+    assert summary.recorded_surplus_paise == -300000  # -₹3,000 deficit
+
+    # Trend with single transaction
+    trend_single = calculate_cumulative_trend([txs[0]], "2026-10")
+    assert len(trend_single) == 1
+    assert trend_single[0]["date"] == "2026-10-05"
+    assert trend_single[0]["income_inr"] == 5000.0
+
+    # Trend with zero transactions
+    trend_empty = calculate_cumulative_trend([], "2026-10")
+    assert trend_empty == []
