@@ -1,0 +1,32 @@
+{
+  "2026-10": {
+    "rows": 19,
+    "income_paise": 1500000,
+    "expense_paise": 990000,
+    "transfer_paise": 200000,
+    "recorded_surplus_paise": 510000,
+    "expense_by_category_paise": {
+      "Food": 140000,
+      "Transport": 60000,
+      "Shopping": 200000,
+      "Education": 200000,
+      "Bills": 290000,
+      "Entertainment": 100000
+    }
+  },
+  "2026-11": {
+    "rows": 22,
+    "income_paise": 1500000,
+    "expense_paise": 834000,
+    "transfer_paise": 200000,
+    "recorded_surplus_paise": 666000,
+    "expense_by_category_paise": {
+      "Food": 185000,
+      "Transport": 78000,
+      "Shopping": 90000,
+      "Education": 101000,
+      "Bills": 320000,
+      "Entertainment": 60000
+    }
+  }
+}

@@ -1,0 +1,42 @@
+id,date,description,amount,type,category
+OCT-001,2026-10-01,Family allowance,12000.00,income,Income
+OCT-002,2026-10-02,Part-time tutoring,3000.00,income,Income
+OCT-003,2026-10-03,Canteen lunch,300.00,expense,Food
+OCT-004,2026-10-04,Weekly groceries,500.00,expense,Food
+OCT-005,2026-10-05,Cafe breakfast,200.00,expense,Food
+OCT-006,2026-10-06,Dinner outing,400.00,expense,Food
+OCT-007,2026-10-07,Bus ticket,100.00,expense,Transport
+OCT-008,2026-10-08,Metro commute,200.00,expense,Transport
+OCT-009,2026-10-09,Scooter petrol,300.00,expense,Transport
+OCT-010,2026-10-10,New shoes,1200.00,expense,Shopping
+OCT-011,2026-10-11,College backpack,800.00,expense,Shopping
+OCT-012,2026-10-12,Python course,1500.00,expense,Education
+OCT-013,2026-10-13,Statistics textbook,500.00,expense,Education
+OCT-014,2026-10-14,Hostel rent,2500.00,expense,Bills
+OCT-015,2026-10-15,Phone recharge,400.00,expense,Bills
+OCT-016,2026-10-16,Cinema evening,600.00,expense,Entertainment
+OCT-017,2026-10-17,Music plan,400.00,expense,Entertainment
+OCT-018,2026-10-18,Own account transfer,1500.00,transfer,Transfer
+OCT-019,2026-10-19,Wallet top up transfer,500.00,transfer,Transfer
+NOV-001,2026-11-01,Family allowance,12000.00,income,Income
+NOV-002,2026-11-02,Part-time tutoring,3000.00,income,Income
+NOV-003,2026-11-03,Mess meals,900.00,expense,Food
+NOV-004,2026-11-04,Vegetable market,450.00,expense,Food
+NOV-005,2026-11-05,Cafe snacks,180.00,expense,Food
+NOV-006,2026-11-01,Lunch box,220.00,expense,Food
+NOV-007,2026-11-02,Metro pass,500.00,expense,Transport
+NOV-008,2026-11-03,Bus travel,120.00,expense,Transport
+NOV-009,2026-11-04,Auto ride,160.00,expense,Transport
+NOV-010,2026-11-05,T shirt,650.00,expense,Shopping
+NOV-011,2026-11-01,Phone case,250.00,expense,Shopping
+NOV-012,2026-11-02,Notebook pack,180.00,expense,Education
+NOV-013,2026-11-03,Exam fee,750.00,expense,Education
+NOV-014,2026-11-04,Hostel rent,2500.00,expense,Bills
+NOV-015,2026-11-05,Phone plan,400.00,expense,Bills
+NOV-016,2026-11-01,Broadband share,300.00,expense,Bills
+NOV-017,2026-11-02,Cinema ticket,350.00,expense,Entertainment
+NOV-018,2026-11-03,Game purchase,250.00,expense,Entertainment
+NOV-019,2026-11-04,Grocery milk,100.00,expense,Food
+NOV-020,2026-11-05,Pen set,80.00,expense,Education
+NOV-021,2026-11-01,Own account transfer,1500.00,transfer,Transfer
+NOV-022,2026-11-02,Wallet top up transfer,500.00,transfer,Transfer
