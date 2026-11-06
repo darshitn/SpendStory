@@ -1,158 +1,57 @@
 # SpendStory
 
-SpendStory is an AI-assisted finance dashboard for students. Track income, expenses, and budgets in Indian rupees, explore spending by month, and review category suggestions from a local machine-learning model. Built for AI for Finance CIA-2.
+SpendStory is an AI-assisted personal finance dashboard for students. It helps you see where your money went, check how spending compares with category budgets, and review expense categories suggested by a machine learning model. Built for the **AI for Finance CIA-2** assignment.
 
-![SpendStory dashboard with fictional demo data](docs/ui-implementation/desktop_dashboard.png)
+[Open the live demo](https://spendstory.onrender.com/) · [Project report](docs/PROJECT_REPORT.md) · [Presentation walkthrough](docs/DEMO_SCRIPT.md)
 
----
+![SpendStory Overview with November totals, cumulative income and spending, and a seven-category expense breakdown](docs/screenshots/overview.jpg)
 
-## Visual Design Reference
-The user interface is modeled directly on the **Money Management Dashboard** design by Atiqur Rahman for ILmix Studio ([Dribbble Reference](https://dribbble.com/shots/27090441-Money-Management-Dashboard)).
-- **Pale Lavender Canvas (`#E2E7F5`)**: High-contrast framing with rounded white application shell (`border-radius: 28px`).
-- **Quiet Left Sidebar (`#F8FAFD`)**: Wordmark branding, thin line navigation items with live review count badges, and a compact Demo tools menu.
-- **Four Financial Summary Cards**: Recorded Income, Recorded Expenses, Recorded Surplus, and Transfers Excluded.
-- **Asymmetric Visualization Layout**:
-  - *70/30 Row*: Cumulative income and expense trends beside an interactive category doughnut.
-  - *30/70 Row*: Budget progress beside monthly comparison bars. Select a bar to open that month.
-- **Interactive Views**: Overview, Transactions (with search & inline category editing), Budgets (target allocations & rebalancing suggestions), Category Review (AI abstention queue), and Model Evaluation (live transparency metrics).
+![SpendStory monthly budgets and the twelve-month income and expense comparison](docs/screenshots/monthly-comparison.jpg)
 
----
+## Try the demo
 
-## Features & Mathematical Integrity
-1. **Integer Paise Representation**: All monetary values are strictly parsed via `decimal.Decimal` and stored/summed as integer paise (1 INR = 100 paise) to eliminate floating-point rounding bugs.
-2. **Transfer Exclusion**: Internal transfers between accounts (e.g. ATM cash withdrawals) are tracked but strictly excluded from income, expenses, and recorded surplus.
-3. **Idempotent Ingestion**: SHA-256 payload fingerprinting prevents duplicate entries upon re-importing identical files while safeguarding user manual category corrections and detecting ID conflicts.
-4. **Offline ML Categorization**: A scikit-learn TF-IDF + Logistic Regression pipeline trained on 72 student expenses. Implements vocabulary checks and confidence thresholds (0.25) to abstain to "Other (Needs Review)" on ambiguous or unknown descriptions.
-5. **Spreadsheet Injection Defense**: CSV export prepends a single apostrophe (`'`) to any cell beginning with `=`, `+`, `-`, `@`, `\t`, or `\r`.
-6. **Runs locally without API keys**: The desktop setup stores records in SQLite (`storage/finance.db`). The hosted demo seeds a separate temporary SQLite ledger for each browser session.
+The hosted app opens on November 2026 with **218 fictional transactions across 12 months**. Each browser session gets its own temporary ledger. Use fictional data in the hosted demo.
 
----
+- **Overview** compares monthly income and expenses, shows where spending went, and opens past months when you select a bar. Try March 2026 to see a month with a deficit.
+- **Transactions** lets you search, filter, add transactions, and import or export a CSV. Internal transfers are tracked separately from income, expenses, and surplus.
+- **Budgets** shows the target, spending, and remaining balance for each category. In November, Bills is ₹180 over target and Food has ₹220 left.
+- **Category Review** opens with two fictional expenses flagged for review. Confirm or correct a category to update the ledger.
+- **Model Evaluation** shows the held-out results and lets you inspect individual model decisions.
 
-## Verified Demo Totals (`data/demo/transactions.csv`)
-- **October 2026**:
-  - Recorded Income: **₹15,000.00** (1,500,000 paise)
-  - Recorded Expenses: **₹9,900.00** (990,000 paise)
-  - Recorded Surplus: **₹5,100.00** (510,000 paise)
-  - Transfers Excluded: **₹2,000.00** (200,000 paise)
-- **November 2026**:
-  - Recorded Income: **₹19,300.00** (1,930,000 paise)
-  - Recorded Expenses: **₹14,160.00** (1,416,000 paise)
-  - Recorded Surplus: **₹5,140.00** (514,000 paise)
-  - Transfers Excluded: **₹2,750.00** (275,000 paise)
+The November demo records **₹19,300 in income**, **₹14,160 in expenses**, and **₹5,140 in surplus**, with **₹2,750 in excluded transfers**. See the [sample CSV](data/demo/transactions.csv) and [expected monthly totals](data/demo/EXPECTED_TOTALS.json).
 
----
+## How the AI works
 
-## Quickstart & Windows Commands
+When an expense has no category, SpendStory uses **TF-IDF** to represent the transaction description and **logistic regression** to suggest a category. If the description contains no known terms or the model score is below its cutoff, the app sends the expense to Category Review. Manual corrections remain on the transaction when the same CSV is imported again.
 
-From the project root:
+On 18 synthetic test examples, the model **categorized 5 correctly** and **sent 13 to human review**. These results describe a small fictional test set. Budget comparisons and financial totals use explicit rules and integer paise. The model runs without an external AI API. [Evaluation results](reports/model_evaluation.json)
 
-### 1. Environment & Dependencies
+## Run locally
+
+Use Python 3.12. From the repository root in PowerShell:
+
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements-lock.txt
-.\.venv\Scripts\python.exe -m pip check
-```
-
-### 2. Run Comprehensive Unit & Smoke Tests
-```powershell
-.\.venv\Scripts\python.exe -m pytest -q
-```
-*Executes all 27 tests covering validation, paise math, transfer exclusion, storage, ML abstention, and Streamlit AppTest UI smoke checks.*
-
-### 3. Run Standalone Model Evaluation
-```powershell
-.\.venv\Scripts\python.exe scripts/evaluate_model.py
-```
-*Evaluates the offline model against untouched holdout data and updates `reports/model_evaluation.json`.*
-
-### 4. Launch the Streamlit Application
-```powershell
 .\.venv\Scripts\python.exe -m streamlit run app.py --server.address 127.0.0.1
 ```
-*Open your browser at `http://127.0.0.1:8501`. Click **Try sample data** on the empty Overview or under **Demo tools** in the sidebar to load a year of fictional data from December 2025 through November 2026.*
 
-### 5. Automated Headless Browser Screen Captures
+Open [localhost:8501](http://127.0.0.1:8501) and select **Try sample data**. The local app stores transactions and budgets in SQLite at `storage/finance.db`. To run the tests or reproduce the evaluation:
+
 ```powershell
-.\.venv\Scripts\python.exe scripts/capture_screenshots.py
-```
-*Uses Chrome DevTools Protocol to capture real screenshots across desktop (1440x1000) and mobile (390x844) viewports into `docs/ui-implementation/`.*
-
----
-
-## Render demo
-
-Create a Blueprint from this repository’s `main` branch on Render. The root
-`render.yaml` defines the web service, Python version, and health check. It
-enables fictional demo mode, which preloads 12 months of fictional data, opens on November 2026, and gives
-each browser session its own temporary SQLite ledger. Use the local setup for
-personal records or edits you want to keep.
-
-## Project Structure
-```
-SpendStory/
-├── .streamlit/
-│   └── config.toml           # Streamlit theme & server configuration
-├── data/
-│   ├── demo/
-│   │   ├── EXPECTED_TOTALS.json
-│   │   └── transactions.csv
-│   ├── evaluation/
-│   │   └── categories_holdout.csv
-│   └── training/
-│       └── categories.csv
-├── docs/
-│   ├── ui-reference/
-│   │   └── reference.png      # Downloaded Dribbble reference image
-│   ├── ui-implementation/   # Real browser screenshots
-│   │   ├── desktop_dashboard.png
-│   │   ├── mobile_dashboard.png
-│   │   ├── transactions_view.png
-│   │   ├── budgets_view.png
-│   │   ├── category_review_view.png
-│   │   └── model_evaluation_view.png
-│   ├── PROJECT_SPEC.md
-│   ├── PROJECT_REPORT.md     # Full academic project report
-│   ├── VIVA_GUIDE.md         # Comprehensive viva defense guide
-│   └── DEMO_SCRIPT.md        # 5-minute presentation walkthrough
-├── handoff/
-│   ├── ANTIGRAVITY_PROMPT.md
-│   └── DRIBBBLE_UI_PROMPT.md
-├── reports/
-│   └── model_evaluation.json# Measured holdout evaluation metrics
-├── scripts/
-│   ├── evaluate_model.py     # Standalone holdout evaluation runner
-│   └── capture_screenshots.py# CDP headless browser capture script
-├── src/
-│   ├── __init__.py
-│   ├── analytics.py          # Paise math, budget comparisons, safe CSV
-│   ├── categorizer.py        # ML pipeline, inference, abstention
-│   ├── dashboard_charts.py  # Interactive SVG chart component
-│   ├── dashboard_charts.js
-│   ├── dashboard_charts.css
-│   ├── storage.py            # SQLite schema, queries, idempotent import
-│   └── transactions.py       # Ingestion, validation, paise conversions
-├── storage/
-│   └── finance.db            # SQLite persistent store
-├── tests/
-│   ├── __init__.py
-│   ├── test_analytics.py
-│   ├── test_categorizer.py
-│   ├── test_storage.py
-│   ├── test_transactions.py
-│   └── test_ui_smoke.py
-├── app.py                     # SpendStory Streamlit application
-├── ARCHITECTURE.md
-├── AI_INSTRUCTIONS.md
-├── PROJECT.md
-├── README.md
-├── ROADMAP.md
-└── TASKS.md
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe scripts/evaluate_model.py
 ```
 
----
+## Repository layout
 
-## Submission & Academic Disclosures
-- **Fictional Data**: All sample transactions, merchants, and training data are synthetic.
-- **Model Scope**: Holdout evaluation measures performance on this tiny synthetic corpus (27.8% accuracy, 72.2% abstention rate). It does not claim production bank statement parity.
-- **Storage Security**: Local SQLite storage is plaintext; not encrypted at rest.
-- **Assistance**: Antigravity helped scaffold the project. Codex implemented the current dashboard and verified its browser interactions.
+| Path | Purpose |
+| --- | --- |
+| [app.py](app.py) and [src/](src/) | Streamlit screens, charts, transaction validation, analytics, categorization, and SQLite storage |
+| [data/](data/) | Fictional demo, training, and evaluation data |
+| [scripts/](scripts/) and [reports/](reports/) | Model evaluation script and saved results |
+| [tests/](tests/) | Tests for transactions, storage, analytics, categorization, and the UI |
+| [docs/](docs/) | Project report, presentation notes, and live dashboard screenshots |
+| [render.yaml](render.yaml) | Render Web Service configuration for the hosted demo |
+
+The interface draws inspiration from the [Money Management Dashboard by Atiqur Rahman for ILmix Studio](https://dribbble.com/shots/27090441-Money-Management-Dashboard). Antigravity helped scaffold the project. Codex assisted with the dashboard, demo data, deployment, and verification.

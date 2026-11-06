@@ -46,7 +46,7 @@ Do not call category rules or budget arithmetic AI. Synthetic training and synth
 ## Acceptance checks
 
 - From a fresh environment, README commands reproduce startup, tests and evaluation.
-- Demo CSV has 41 records. Expected monthly totals are in `data/demo/EXPECTED_TOTALS.json`; compute from original data independently in tests.
+- The demo CSV contains 218 records across 12 months. Expected monthly totals are in `data/demo/EXPECTED_TOTALS.json`; compute from original data independently in tests.
 - Re-loading demo/re-importing identical IDs never duplicates spending; conflicting IDs fail safely.
 - Import validation, exact paise math, transfer exclusion, month filtering, persistence and preservation of user category corrections have behavior tests.
 - A correction survives rerun/restart, as do budget edits. Empty datasets do not crash.

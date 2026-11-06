@@ -83,5 +83,4 @@ We launched the application on `http://127.0.0.1:8501` and ran an automated capt
 | `src/analytics.py` | Integer math, budget comparisons, safe export | `calculate_monthly_summary`, `calculate_budget_comparisons`, `calculate_cumulative_trend`, `export_transactions_to_csv` |
 | `src/categorizer.py` | ML pipeline, prediction, abstention | `Categorizer`, `predict`, `get_default_categorizer` |
 | `scripts/evaluate_model.py` | Standalone holdout evaluation runner | Evaluates holdout CSV, writes `reports/model_evaluation.json` |
-| `scripts/capture_screenshots.py` | Automated CDP headless browser verification | Captures desktop/mobile screenshots to `docs/ui-implementation/` |
 | `app.py` | Dribbble Nexora UI presentation & routing | Streamlit app layout, 4 metric cards, Altair charts, 5 navigation views |

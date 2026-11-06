@@ -97,14 +97,11 @@ The model sent 13 of the 18 synthetic examples to human review. Its five correct
 
 ---
 
-## 5. Visual Audit & Screenshot Reference
-Real browser screenshots captured via Chrome DevTools Protocol at desktop (1440x1000) and mobile (390x844) viewports:
-- Desktop Dashboard Overview: `docs/ui-implementation/desktop_dashboard.png`
-- Mobile Responsive View: `docs/ui-implementation/mobile_dashboard.png`
-- Transactions View: `docs/ui-implementation/transactions_view.png`
-- Category Budgets View: `docs/ui-implementation/budgets_view.png`
-- Category Review View: `docs/ui-implementation/category_review_view.png`
-- Model Evaluation View: `docs/ui-implementation/model_evaluation_view.png`
+## 5. Live Demo and Screenshots
+The [hosted SpendStory demo](https://spendstory.onrender.com/) starts with 218 fictional transactions across 12 months. Each browser session gets a temporary SQLite ledger. The screenshots show the live November Overview.
+
+- [Financial summary, cumulative trends, and expense breakdown](screenshots/overview.jpg)
+- [Budget progress and twelve-month income and expenses](screenshots/monthly-comparison.jpg)
 
 ---
 
