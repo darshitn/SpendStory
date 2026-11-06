@@ -1,4 +1,164 @@
 id,date,description,amount,type,category
+DEMO-202512-01,2025-12-01,Family allowance,10500.00,income,Income
+DEMO-202512-02,2025-12-02,Hostel rent,2730.00,expense,Bills
+DEMO-202512-03,2025-12-03,Campus canteen and groceries,716.00,expense,Food
+DEMO-202512-04,2025-12-05,Metro pass,370.00,expense,Transport
+DEMO-202512-05,2025-12-07,Course materials,600.00,expense,Education
+DEMO-202512-06,2025-12-09,Club film screening,650.00,expense,Entertainment
+DEMO-202512-07,2025-12-11,Campus essentials,600.00,expense,Shopping
+DEMO-202512-08,2025-12-13,Tutoring payment,2100.00,income,Income
+DEMO-202512-09,2025-12-15,Weekly groceries and mess meals,1434.00,expense,Food
+DEMO-202512-10,2025-12-17,Phone and internet share,520.00,expense,Bills
+DEMO-202512-11,2025-12-19,Books and stationery,300.00,expense,Education
+DEMO-202512-12,2025-12-21,Bus and auto fares,370.00,expense,Transport
+DEMO-202512-13,2025-12-22,Move to savings wallet,1600.00,transfer,Transfer
+DEMO-202512-14,2025-12-24,Campus project stipend,800.00,income,Income
+DEMO-202512-15,2025-12-25,Replacement supplies,600.00,expense,Shopping
+DEMO-202512-16,2025-12-27,Student event and games,650.00,expense,Entertainment
+DEMO-202601-01,2026-01-01,Family allowance,11200.00,income,Income
+DEMO-202601-02,2026-01-02,Hostel rent,2930.00,expense,Bills
+DEMO-202601-03,2026-01-03,Campus canteen and groceries,843.00,expense,Food
+DEMO-202601-04,2026-01-05,Metro pass,470.00,expense,Transport
+DEMO-202601-05,2026-01-07,Course materials,3300.00,expense,Education
+DEMO-202601-06,2026-01-09,Club film screening,325.00,expense,Entertainment
+DEMO-202601-07,2026-01-11,Campus essentials,675.00,expense,Shopping
+DEMO-202601-08,2026-01-13,Tutoring payment,2500.00,income,Income
+DEMO-202601-09,2026-01-15,Weekly groceries and mess meals,1687.00,expense,Food
+DEMO-202601-10,2026-01-17,Phone and internet share,520.00,expense,Bills
+DEMO-202601-11,2026-01-19,Books and stationery,300.00,expense,Education
+DEMO-202601-12,2026-01-21,Bus and auto fares,470.00,expense,Transport
+DEMO-202601-13,2026-01-22,Move to savings wallet,775.00,transfer,Transfer
+DEMO-202601-14,2026-01-24,Campus project stipend,700.00,income,Income
+DEMO-202601-15,2026-01-25,Replacement supplies,675.00,expense,Shopping
+DEMO-202601-16,2026-01-27,Student event and games,325.00,expense,Entertainment
+DEMO-202602-01,2026-02-01,Family allowance,11000.00,income,Income
+DEMO-202602-02,2026-02-02,Hostel rent,2580.00,expense,Bills
+DEMO-202602-03,2026-02-03,Campus canteen and groceries,776.00,expense,Food
+DEMO-202602-04,2026-02-05,Metro pass,550.00,expense,Transport
+DEMO-202602-05,2026-02-07,Course materials,550.00,expense,Education
+DEMO-202602-06,2026-02-09,Club film screening,560.00,expense,Entertainment
+DEMO-202602-07,2026-02-11,Campus essentials,465.00,expense,Shopping
+DEMO-202602-08,2026-02-13,Tutoring payment,2600.00,income,Income
+DEMO-202602-09,2026-02-15,Weekly groceries and mess meals,1554.00,expense,Food
+DEMO-202602-10,2026-02-17,Phone and internet share,520.00,expense,Bills
+DEMO-202602-11,2026-02-19,Books and stationery,300.00,expense,Education
+DEMO-202602-12,2026-02-21,Bus and auto fares,550.00,expense,Transport
+DEMO-202602-13,2026-02-22,Move to savings wallet,850.00,transfer,Transfer
+DEMO-202602-14,2026-02-24,Campus project stipend,1250.00,income,Income
+DEMO-202602-15,2026-02-25,Replacement supplies,465.00,expense,Shopping
+DEMO-202602-16,2026-02-27,Student event and games,560.00,expense,Entertainment
+DEMO-202603-01,2026-03-01,Family allowance,11000.00,income,Income
+DEMO-202603-02,2026-03-02,Hostel rent,2930.00,expense,Bills
+DEMO-202603-03,2026-03-03,Campus canteen and groceries,966.00,expense,Food
+DEMO-202603-04,2026-03-05,Metro pass,675.00,expense,Transport
+DEMO-202603-05,2026-03-07,Course materials,3850.00,expense,Education
+DEMO-202603-06,2026-03-09,Club film screening,425.00,expense,Entertainment
+DEMO-202603-07,2026-03-11,Campus essentials,975.00,expense,Shopping
+DEMO-202603-08,2026-03-13,Tutoring payment,1600.00,income,Income
+DEMO-202603-09,2026-03-15,Weekly groceries and mess meals,1934.00,expense,Food
+DEMO-202603-10,2026-03-17,Phone and internet share,520.00,expense,Bills
+DEMO-202603-11,2026-03-19,Books and stationery,300.00,expense,Education
+DEMO-202603-12,2026-03-21,Bus and auto fares,675.00,expense,Transport
+DEMO-202603-13,2026-03-22,Move to savings wallet,925.00,transfer,Transfer
+DEMO-202603-14,2026-03-24,Campus project stipend,500.00,income,Income
+DEMO-202603-15,2026-03-25,Replacement supplies,975.00,expense,Shopping
+DEMO-202603-16,2026-03-27,Student event and games,425.00,expense,Entertainment
+DEMO-202604-01,2026-04-01,Family allowance,11500.00,income,Income
+DEMO-202604-02,2026-04-02,Hostel rent,2880.00,expense,Bills
+DEMO-202604-03,2026-04-03,Campus canteen and groceries,866.00,expense,Food
+DEMO-202604-04,2026-04-05,Metro pass,540.00,expense,Transport
+DEMO-202604-05,2026-04-07,Course materials,930.00,expense,Education
+DEMO-202604-06,2026-04-09,Club film screening,540.00,expense,Entertainment
+DEMO-202604-07,2026-04-11,Campus essentials,730.00,expense,Shopping
+DEMO-202604-08,2026-04-13,Tutoring payment,2800.00,income,Income
+DEMO-202604-09,2026-04-15,Weekly groceries and mess meals,1734.00,expense,Food
+DEMO-202604-10,2026-04-17,Phone and internet share,520.00,expense,Bills
+DEMO-202604-11,2026-04-19,Books and stationery,300.00,expense,Education
+DEMO-202604-12,2026-04-21,Bus and auto fares,540.00,expense,Transport
+DEMO-202604-13,2026-04-22,Move to savings wallet,1000.00,transfer,Transfer
+DEMO-202604-14,2026-04-24,Campus project stipend,1800.00,income,Income
+DEMO-202604-15,2026-04-25,Replacement supplies,730.00,expense,Shopping
+DEMO-202604-16,2026-04-27,Student event and games,540.00,expense,Entertainment
+DEMO-202605-01,2026-05-01,Family allowance,10600.00,income,Income
+DEMO-202605-02,2026-05-02,Hostel rent,2800.00,expense,Bills
+DEMO-202605-03,2026-05-03,Campus canteen and groceries,743.00,expense,Food
+DEMO-202605-04,2026-05-05,Metro pass,790.00,expense,Transport
+DEMO-202605-05,2026-05-07,Course materials,660.00,expense,Education
+DEMO-202605-06,2026-05-09,Club film screening,920.00,expense,Entertainment
+DEMO-202605-07,2026-05-11,Campus essentials,810.00,expense,Shopping
+DEMO-202605-08,2026-05-13,Tutoring payment,2200.00,income,Income
+DEMO-202605-09,2026-05-15,Weekly groceries and mess meals,1487.00,expense,Food
+DEMO-202605-10,2026-05-17,Phone and internet share,520.00,expense,Bills
+DEMO-202605-11,2026-05-19,Books and stationery,300.00,expense,Education
+DEMO-202605-12,2026-05-21,Bus and auto fares,790.00,expense,Transport
+DEMO-202605-13,2026-05-22,Move to savings wallet,1075.00,transfer,Transfer
+DEMO-202605-14,2026-05-24,Campus project stipend,2100.00,income,Income
+DEMO-202605-15,2026-05-25,Replacement supplies,810.00,expense,Shopping
+DEMO-202605-16,2026-05-27,Student event and games,920.00,expense,Entertainment
+DEMO-202606-01,2026-06-01,Family allowance,11000.00,income,Income
+DEMO-202606-02,2026-06-02,Hostel rent,2860.00,expense,Bills
+DEMO-202606-03,2026-06-03,Campus canteen and groceries,826.00,expense,Food
+DEMO-202606-04,2026-06-05,Metro pass,585.00,expense,Transport
+DEMO-202606-05,2026-06-07,Course materials,1870.00,expense,Education
+DEMO-202606-06,2026-06-09,Club film screening,380.00,expense,Entertainment
+DEMO-202606-07,2026-06-11,Campus essentials,485.00,expense,Shopping
+DEMO-202606-08,2026-06-13,Tutoring payment,3000.00,income,Income
+DEMO-202606-09,2026-06-15,Weekly groceries and mess meals,1654.00,expense,Food
+DEMO-202606-10,2026-06-17,Phone and internet share,520.00,expense,Bills
+DEMO-202606-11,2026-06-19,Books and stationery,300.00,expense,Education
+DEMO-202606-12,2026-06-21,Bus and auto fares,585.00,expense,Transport
+DEMO-202606-13,2026-06-22,Move to savings wallet,1150.00,transfer,Transfer
+DEMO-202606-14,2026-06-24,Campus project stipend,3200.00,income,Income
+DEMO-202606-15,2026-06-25,Replacement supplies,485.00,expense,Shopping
+DEMO-202606-16,2026-06-27,Student event and games,380.00,expense,Entertainment
+DEMO-202607-01,2026-07-01,Family allowance,11200.00,income,Income
+DEMO-202607-02,2026-07-02,Hostel rent,3040.00,expense,Bills
+DEMO-202607-03,2026-07-03,Campus canteen and groceries,906.00,expense,Food
+DEMO-202607-04,2026-07-05,Metro pass,725.00,expense,Transport
+DEMO-202607-05,2026-07-07,Course materials,4320.00,expense,Education
+DEMO-202607-06,2026-07-09,Club film screening,440.00,expense,Entertainment
+DEMO-202607-07,2026-07-11,Campus essentials,1205.00,expense,Shopping
+DEMO-202607-08,2026-07-13,Tutoring payment,3200.00,income,Income
+DEMO-202607-09,2026-07-15,Weekly groceries and mess meals,1814.00,expense,Food
+DEMO-202607-10,2026-07-17,Phone and internet share,520.00,expense,Bills
+DEMO-202607-11,2026-07-19,Books and stationery,300.00,expense,Education
+DEMO-202607-12,2026-07-21,Bus and auto fares,725.00,expense,Transport
+DEMO-202607-13,2026-07-22,Move to savings wallet,1225.00,transfer,Transfer
+DEMO-202607-14,2026-07-24,Campus project stipend,2350.00,income,Income
+DEMO-202607-15,2026-07-25,Replacement supplies,1205.00,expense,Shopping
+DEMO-202607-16,2026-07-27,Student event and games,440.00,expense,Entertainment
+DEMO-202608-01,2026-08-01,Family allowance,11500.00,income,Income
+DEMO-202608-02,2026-08-02,Hostel rent,3020.00,expense,Bills
+DEMO-202608-03,2026-08-03,Campus canteen and groceries,716.00,expense,Food
+DEMO-202608-04,2026-08-05,Metro pass,445.00,expense,Transport
+DEMO-202608-05,2026-08-07,Course materials,670.00,expense,Education
+DEMO-202608-06,2026-08-09,Club film screening,575.00,expense,Entertainment
+DEMO-202608-07,2026-08-11,Campus essentials,580.00,expense,Shopping
+DEMO-202608-08,2026-08-13,Tutoring payment,2750.00,income,Income
+DEMO-202608-09,2026-08-15,Weekly groceries and mess meals,1434.00,expense,Food
+DEMO-202608-10,2026-08-17,Phone and internet share,520.00,expense,Bills
+DEMO-202608-11,2026-08-19,Books and stationery,300.00,expense,Education
+DEMO-202608-12,2026-08-21,Bus and auto fares,445.00,expense,Transport
+DEMO-202608-13,2026-08-22,Move to savings wallet,1300.00,transfer,Transfer
+DEMO-202608-14,2026-08-24,Campus project stipend,1150.00,income,Income
+DEMO-202608-15,2026-08-25,Replacement supplies,580.00,expense,Shopping
+DEMO-202608-16,2026-08-27,Student event and games,575.00,expense,Entertainment
+DEMO-202609-01,2026-09-01,Family allowance,12000.00,income,Income
+DEMO-202609-02,2026-09-02,Hostel rent,3280.00,expense,Bills
+DEMO-202609-03,2026-09-03,Campus canteen and groceries,933.00,expense,Food
+DEMO-202609-04,2026-09-05,Metro pass,610.00,expense,Transport
+DEMO-202609-05,2026-09-07,Course materials,1850.00,expense,Education
+DEMO-202609-06,2026-09-09,Club film screening,535.00,expense,Entertainment
+DEMO-202609-07,2026-09-11,Campus essentials,920.00,expense,Shopping
+DEMO-202609-08,2026-09-13,Tutoring payment,3300.00,income,Income
+DEMO-202609-09,2026-09-15,Weekly groceries and mess meals,1867.00,expense,Food
+DEMO-202609-10,2026-09-17,Phone and internet share,520.00,expense,Bills
+DEMO-202609-11,2026-09-19,Books and stationery,300.00,expense,Education
+DEMO-202609-12,2026-09-21,Bus and auto fares,610.00,expense,Transport
+DEMO-202609-13,2026-09-22,Move to savings wallet,1375.00,transfer,Transfer
+DEMO-202609-14,2026-09-24,Campus project stipend,2100.00,income,Income
+DEMO-202609-15,2026-09-25,Replacement supplies,920.00,expense,Shopping
+DEMO-202609-16,2026-09-27,Student event and games,535.00,expense,Entertainment
 OCT-001,2026-10-01,Family allowance,12000.00,income,Income
 OCT-002,2026-10-02,Part-time tutoring,3000.00,income,Income
 OCT-003,2026-10-03,Canteen lunch,300.00,expense,Food
@@ -19,24 +179,41 @@ OCT-017,2026-10-17,Music plan,400.00,expense,Entertainment
 OCT-018,2026-10-18,Own account transfer,1500.00,transfer,Transfer
 OCT-019,2026-10-19,Wallet top up transfer,500.00,transfer,Transfer
 NOV-001,2026-11-01,Family allowance,12000.00,income,Income
-NOV-002,2026-11-02,Part-time tutoring,3000.00,income,Income
-NOV-003,2026-11-03,Mess meals,900.00,expense,Food
-NOV-004,2026-11-04,Vegetable market,450.00,expense,Food
-NOV-005,2026-11-05,Cafe snacks,180.00,expense,Food
 NOV-006,2026-11-01,Lunch box,220.00,expense,Food
-NOV-007,2026-11-02,Metro pass,500.00,expense,Transport
-NOV-008,2026-11-03,Bus travel,120.00,expense,Transport
-NOV-009,2026-11-04,Auto ride,160.00,expense,Transport
-NOV-010,2026-11-05,T shirt,650.00,expense,Shopping
 NOV-011,2026-11-01,Phone case,250.00,expense,Shopping
-NOV-012,2026-11-02,Notebook pack,180.00,expense,Education
-NOV-013,2026-11-03,Exam fee,750.00,expense,Education
-NOV-014,2026-11-04,Hostel rent,2500.00,expense,Bills
-NOV-015,2026-11-05,Phone plan,400.00,expense,Bills
 NOV-016,2026-11-01,Broadband share,300.00,expense,Bills
-NOV-017,2026-11-02,Cinema ticket,350.00,expense,Entertainment
-NOV-018,2026-11-03,Game purchase,250.00,expense,Entertainment
-NOV-019,2026-11-04,Grocery milk,100.00,expense,Food
-NOV-020,2026-11-05,Pen set,80.00,expense,Education
 NOV-021,2026-11-01,Own account transfer,1500.00,transfer,Transfer
+NOV-002,2026-11-02,Part-time tutoring,3000.00,income,Income
+NOV-007,2026-11-02,Metro pass,500.00,expense,Transport
+NOV-012,2026-11-02,Notebook pack,180.00,expense,Education
+NOV-017,2026-11-02,Cinema ticket,350.00,expense,Entertainment
 NOV-022,2026-11-02,Wallet top up transfer,500.00,transfer,Transfer
+NOV-003,2026-11-03,Mess meals,900.00,expense,Food
+NOV-008,2026-11-03,Bus travel,120.00,expense,Transport
+NOV-013,2026-11-03,Exam fee,750.00,expense,Education
+NOV-018,2026-11-03,Game purchase,250.00,expense,Entertainment
+NOV-004,2026-11-04,Vegetable market,450.00,expense,Food
+NOV-009,2026-11-04,Auto ride,160.00,expense,Transport
+NOV-014,2026-11-04,Hostel rent,2500.00,expense,Bills
+NOV-019,2026-11-04,Grocery milk,100.00,expense,Food
+NOV-005,2026-11-05,Cafe snacks,180.00,expense,Food
+NOV-010,2026-11-05,T shirt,650.00,expense,Shopping
+NOV-015,2026-11-05,Phone plan,400.00,expense,Bills
+NOV-020,2026-11-05,Pen set,80.00,expense,Education
+NOV-023,2026-11-07,Saturday farmers market,460.00,expense,Food
+NOV-024,2026-11-08,Weekend museum tickets,120.00,expense,Entertainment
+NOV-025,2026-11-10,Semester lab materials,980.00,expense,Education
+NOV-026,2026-11-11,Campus shuttle tickets,170.00,expense,Transport
+NOV-027,2026-11-12,Tutoring session payment,1900.00,income,Income
+NOV-038,2026-11-13,Nivora Collective,420.00,expense,
+NOV-028,2026-11-14,Kitchen staples and vegetables,540.00,expense,Food
+NOV-029,2026-11-15,Repair kit and cable,390.00,expense,Shopping
+NOV-030,2026-11-17,Studio club subscription,180.00,expense,Entertainment
+NOV-031,2026-11-19,Electricity and water share,480.00,expense,Bills
+NOV-032,2026-11-20,Metro recharge,220.00,expense,Transport
+NOV-033,2026-11-22,Campus event stipend,2400.00,income,Income
+NOV-034,2026-11-23,Canteen dinner with classmates,620.00,expense,Food
+NOV-035,2026-11-25,Move money to own savings,750.00,transfer,Transfer
+NOV-036,2026-11-26,Library printing,160.00,expense,Education
+NOV-039,2026-11-27,Aster Quay,570.00,expense,
+NOV-037,2026-11-28,Grocery restock,510.00,expense,Food

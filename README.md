@@ -35,10 +35,10 @@ The user interface is modeled directly on the **Money Management Dashboard** des
   - Recorded Surplus: **₹5,100.00** (510,000 paise)
   - Transfers Excluded: **₹2,000.00** (200,000 paise)
 - **November 2026**:
-  - Recorded Income: **₹15,000.00** (1,500,000 paise)
-  - Recorded Expenses: **₹8,340.00** (834,000 paise)
-  - Recorded Surplus: **₹6,660.00** (666,000 paise)
-  - Transfers Excluded: **₹2,000.00** (200,000 paise)
+  - Recorded Income: **₹19,300.00** (1,930,000 paise)
+  - Recorded Expenses: **₹14,160.00** (1,416,000 paise)
+  - Recorded Surplus: **₹5,140.00** (514,000 paise)
+  - Transfers Excluded: **₹2,750.00** (275,000 paise)
 
 ---
 
@@ -69,7 +69,7 @@ py -3.12 -m venv .venv
 ```powershell
 .\.venv\Scripts\python.exe -m streamlit run app.py --server.address 127.0.0.1
 ```
-*Open your browser at `http://127.0.0.1:8501`. Click **Try sample data** on the empty Overview or under **Demo tools** in the sidebar to load the fictional October and November datasets.*
+*Open your browser at `http://127.0.0.1:8501`. Click **Try sample data** on the empty Overview or under **Demo tools** in the sidebar to load a year of fictional data from December 2025 through November 2026.*
 
 ### 5. Automated Headless Browser Screen Captures
 ```powershell
@@ -83,7 +83,7 @@ py -3.12 -m venv .venv
 
 Create a Blueprint from this repository’s `main` branch on Render. The root
 `render.yaml` defines the web service, Python version, and health check. It
-enables fictional demo mode, which preloads October and November and gives
+enables fictional demo mode, which preloads 12 months of fictional data, opens on November 2026, and gives
 each browser session its own temporary SQLite ledger. Use the local setup for
 personal records or edits you want to keep.
 

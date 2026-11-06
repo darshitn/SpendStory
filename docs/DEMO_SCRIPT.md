@@ -12,15 +12,15 @@ Follow this script step-by-step during your project demonstration.
 
 ---
 
-### Step 2: Overview and October Totals (0:45 – 1:45)
+### Step 2: Overview and November Totals (0:45 – 1:45)
 - Point out the lavender frame and the SpendStory sidebar with its category review count.
   - Four equal summary cards across one row.
-- In the top toolbar, ensure **October 2026** is selected.
+- In the top toolbar, ensure **November 2026** is selected.
 - Show the exact totals matching `EXPECTED_TOTALS.json`:
-  - Recorded Income: **₹15,000.00**
-  - Recorded Expenses: **₹9,900.00**
-  - Recorded Surplus: **₹5,100.00**
-  - Transfers Excluded: **₹2,000.00**
+  - Recorded Income: **₹19,300.00**
+  - Recorded Expenses: **₹14,160.00**
+  - Recorded Surplus: **₹5,140.00**
+  - Transfers Excluded: **₹2,750.00**
 - Point to the **Transfers Excluded** metric and explain: *Transfers between own accounts (e.g., ATM withdrawals or wallet top-ups) are liquidity movements, not spending, and are strictly excluded from surplus and expense totals.*
 
 ---
@@ -29,12 +29,12 @@ Follow this script step-by-step during your project demonstration.
 - Showcase the **Cumulative Income & Expense Trend** (70% width):
   - Truthful dual line/area progression from dated transactions (no fabricated curves).
 - Showcase the **Monthly Expenses Breakdown** doughnut chart (30% width):
-  - Category shares with centered ₹9,900.00 total expense label.
-  - October breakdown: Food ₹1,400, Transport ₹600, Shopping ₹2,000, Education ₹2,000, Bills ₹2,900, and Entertainment ₹1,000.
+  - The center shows ₹14,160 in expenses across seven categories.
+  - November breakdown: Food ₹3,980, Transport ₹1,170, Shopping ₹1,290, Education ₹2,150, Bills ₹3,680, Entertainment ₹900, and Other ₹990.
 - Showcase the **Monthly Budgets** panel (bottom-left 30%):
-  - Progress bars against targets and deterministic suggestions.
+  - Bills are ₹180 over target and Food has ₹220 left. Other has no target and can be reviewed in Budgets.
 - Showcase the **Monthly Income vs Expenses Comparison** (bottom-right 70%):
-  - Mirrored columns: positive indigo income bars above baseline 0, lavender expense outflow bars below baseline 0, with positive INR spending magnitudes in hover tooltips.
+  - Select March 2026 to show a deficit, then return to November. Mirrored columns: positive indigo income bars above baseline 0, lavender expense outflow bars below baseline 0, with positive INR spending magnitudes in hover tooltips.
 
 ---
 
@@ -45,7 +45,7 @@ Follow this script step-by-step during your project demonstration.
 - Click **Record Transaction**:
   - Show how the offline TF-IDF + Logistic Regression model assigned `Food` or routed it to `Other (Needs Review)`.
 - Navigate to **Category Review**:
-  - Show the staging queue of transactions needing review with model confidence scores.
+  - Show the two preloaded November expenses the model left for review.
   - Demonstrate a one-click correction/confirmation (e.g. changing category to `Food`).
   - Explain: *User corrections are recorded as manual overrides in SQLite and do not silently trigger model retraining.*
 
@@ -54,7 +54,7 @@ Follow this script step-by-step during your project demonstration.
 ### Step 5: Idempotency & Safe Export Demonstration (3:30 – 4:15)
 - In the top toolbar, click **Export CSV** to demonstrate downloading the sanitized CSV (formula injection characters `=, +, -, @` sanitized with single quotes).
 - Open **Demo tools** in the sidebar and click **Try sample data** a second time:
-  - Show the notification: `Inserted: 0, Skipped: 41`.
+  - Show the notification: `0 added, 218 already present`.
   - Explain how SHA-256 fingerprinting ensures repeat imports never duplicate spending or overwrite existing user category corrections.
 
 ---

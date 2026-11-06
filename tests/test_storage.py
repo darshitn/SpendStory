@@ -111,16 +111,19 @@ def test_budget_persistence(db):
 
 def test_load_demo_data_idempotency(db):
     res1 = db.load_demo_data("data/demo/transactions.csv")
-    assert res1.inserted == 41
+    assert res1.inserted == 218
     assert res1.skipped == 0
     assert len(res1.conflicts) == 0
 
     # Repeat load must not duplicate rows
     res2 = db.load_demo_data("data/demo/transactions.csv")
     assert res2.inserted == 0
-    assert res2.skipped == 41
+    assert res2.skipped == 218
     assert len(res2.conflicts) == 0
 
     months = db.get_available_months()
     assert "2026-10" in months
     assert "2026-11" in months
+    assert len(months) == 12
+    assert db.get_budgets("2025-12")["Food"] == 200000
+    assert len(db.get_transactions(year_month="2026-11", review_status="needs_review")) == 2

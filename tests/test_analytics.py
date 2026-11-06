@@ -16,43 +16,20 @@ from src.transactions import Transaction, parse_transactions_csv
 
 
 def test_independent_demo_totals_verification():
-    # Read EXPECTED_TOTALS.json
-    expected_path = Path("data/demo/EXPECTED_TOTALS.json")
-    with open(expected_path, "r", encoding="utf-8") as f:
-        expected = json.load(f)
+    expected = json.loads(Path("data/demo/EXPECTED_TOTALS.json").read_text(encoding="utf-8"))
+    transactions, errors = parse_transactions_csv(Path("data/demo/transactions.csv").read_bytes())
+    assert not errors
+    assert len(expected) == 12
+    assert {tx.date[:7] for tx in transactions} == expected.keys()
 
-    # Read and parse demo transactions
-    demo_csv = Path("data/demo/transactions.csv").read_bytes()
-    transactions, errors = parse_transactions_csv(demo_csv)
-    assert len(errors) == 0
-    assert len(transactions) == 41
-
-    # Verify October 2026
-    oct_summary = calculate_monthly_summary(transactions, "2026-10")
-    exp_oct = expected["2026-10"]
-
-    assert oct_summary.row_count == exp_oct["rows"]
-    assert oct_summary.income_paise == exp_oct["income_paise"]  # 1500000 paise (₹15,000)
-    assert oct_summary.expense_paise == exp_oct["expense_paise"]  # 990000 paise (₹9,900)
-    assert oct_summary.transfer_paise == exp_oct["transfer_paise"]  # 200000 paise (₹2,000)
-    assert oct_summary.recorded_surplus_paise == exp_oct["recorded_surplus_paise"]  # 510000 paise (₹5,100)
-
-    # Verify category-wise expense breakdown
-    for cat, expected_paise in exp_oct["expense_by_category_paise"].items():
-        assert oct_summary.expense_by_category_paise.get(cat, 0) == expected_paise
-
-    # Verify November 2026
-    nov_summary = calculate_monthly_summary(transactions, "2026-11")
-    exp_nov = expected["2026-11"]
-
-    assert nov_summary.row_count == exp_nov["rows"]
-    assert nov_summary.income_paise == exp_nov["income_paise"]  # 1500000 paise (₹15,000)
-    assert nov_summary.expense_paise == exp_nov["expense_paise"]  # 834000 paise (₹8,340)
-    assert nov_summary.transfer_paise == exp_nov["transfer_paise"]  # 200000 paise (₹2,000)
-    assert nov_summary.recorded_surplus_paise == exp_nov["recorded_surplus_paise"]  # 666000 paise (₹6,660)
-
-    for cat, expected_paise in exp_nov["expense_by_category_paise"].items():
-        assert nov_summary.expense_by_category_paise.get(cat, 0) == expected_paise
+    for month, totals in expected.items():
+        summary = calculate_monthly_summary(transactions, month)
+        assert summary.row_count == totals["rows"]
+        assert summary.income_paise == totals["income_paise"]
+        assert summary.expense_paise == totals["expense_paise"]
+        assert summary.transfer_paise == totals["transfer_paise"]
+        assert summary.recorded_surplus_paise == totals["recorded_surplus_paise"]
+        assert summary.expense_by_category_paise == totals["expense_by_category_paise"]
 
 
 def test_transfer_exclusion():

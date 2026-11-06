@@ -474,6 +474,7 @@ def get_database(path: str) -> Database:
 
 
 DEMO_CSV = Path("data/demo/transactions.csv")
+DEMO_MONTH = "2026-11"
 HOSTED_DEMO = os.environ.get("SPENDSTORY_DEMO") == "1"
 if HOSTED_DEMO:
     # Keep each visitor's demo edits in their own Streamlit session.
@@ -495,7 +496,7 @@ query_nav = st.query_params.get("nav")
 query_month = st.query_params.get("month")
 
 st.session_state.setdefault("active_nav", query_nav if query_nav in NAV_OPTIONS else "Overview")
-default_month = "2026-10" if HOSTED_DEMO and "2026-10" in available_months else available_months[0]
+default_month = DEMO_MONTH if HOSTED_DEMO and DEMO_MONTH in available_months else available_months[0]
 st.session_state.setdefault("selected_month", query_month if query_month in available_months else default_month)
 st.session_state.setdefault("search_query", "")
 st.session_state.setdefault("tx_type_filter", "All")
@@ -521,7 +522,7 @@ def close_budget_editor() -> None:
 
 def load_sample_data() -> None:
     result = db.load_demo_data(DEMO_CSV)
-    st.session_state.selected_month = "2026-10"
+    st.session_state.selected_month = DEMO_MONTH
     message = f"Fictional sample data: {result.inserted} added, {result.skipped} already present."
     if result.conflicts:
         message += f" {len(result.conflicts)} conflicting IDs kept unchanged."
@@ -779,7 +780,7 @@ if st.session_state.active_nav == "Overview":
     if not ledger_months:
         with st.container(border=True):
             st.markdown("**Explore SpendStory with a sample ledger**")
-            st.caption("Load two months of fictional student transactions and budgets.")
+            st.caption("Load a year of fictional student transactions and budgets.")
             st.button("Try sample data", key="overview_sample_data", type="primary", on_click=load_sample_data)
     elif all_txs_for_month:
         fingerprints = demo_fingerprints(DEMO_CSV.read_bytes())

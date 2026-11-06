@@ -54,11 +54,11 @@ The visual design is modeled on the Dribbble "Nexora" Money Management Dashboard
 - **Pale Lavender Canvas (`#E2E7F5`):** Outer backdrop framing a centered, rounded white application shell (`border-radius: 28px`).
 - **Left sidebar** with the SpendStory wordmark, line icons, a review count, and a demo loader that skips records already present.
 - **Four Financial Summary Cards:**
-  - *Recorded Income:* Displays positive allowances (`₹15,000.00` in Oct/Nov).
-  - *Recorded Expenses:* Displays spending outflow (`₹9,900.00` in Oct, `₹8,340.00` in Nov).
+  - *Recorded Income:* Displays positive allowances (`₹15,000.00` in Oct, `₹19,300.00` in Nov).
+  - *Recorded Expenses:* Displays spending outflow (`₹9,900.00` in Oct, `₹14,160.00` in Nov).
     - October demo expenses by category are Food ₹1,400, Transport ₹600, Shopping ₹2,000, Education ₹2,000, Bills ₹2,900, and Entertainment ₹1,000, as recorded in `data/demo/EXPECTED_TOTALS.json`.
-  - *Recorded Surplus:* Truthful income minus expense delta (`₹5,100.00` in Oct, `₹6,660.00` in Nov).
-  - *Transfers Excluded:* Internal account movements (`₹2,000.00` each month) isolated from budget totals.
+  - *Recorded Surplus:* Truthful income minus expense delta (`₹5,100.00` in Oct, `₹5,140.00` in Nov).
+  - *Transfers Excluded:* Internal account movements (`₹2,000.00` in Oct, `₹2,750.00` in Nov) isolated from budget totals.
 - **Asymmetric Visualization Layout:**
   - *Top Row (70/30):* Dual cumulative income/expense trend lines with translucent fills beside an Expense Category Doughnut chart with center totals.
   - *Bottom Row (30/70):* Category budget progress tracks with overspend alerts beside a mirrored monthly comparison bar chart (income positive, expense negative magnitude).

@@ -2,7 +2,7 @@
 
 Created for the assignment, not downloaded from banking records or a public benchmark.
 
-- `demo/transactions.csv`: 41 hand-designed fictional INR records, split across October (19) and November (22) 2026. Includes income, expenses and explicit transfers; every expense already has a category for a deterministic UI demo. Add a new uncategorized record to demonstrate ML inference.
+- `demo/transactions.csv` contains 218 fictional INR transactions across 12 months (December 2025 through November 2026). November has seven expense categories and two fictional merchant descriptions the model left for review. March demonstrates a monthly deficit. Transactions include explicit transfers so the demo can show how they are excluded from income and expenses.
 - `demo/EXPECTED_TOTALS.json`: reference sums in integer paise, not rupees. Derived from the fixture and independently rechecked during setup.
 - `training/categories.csv`: 72 hand-authored descriptions, 12 per class across six expense categories.
 - `evaluation/categories_holdout.csv`: 18 separately authored descriptions, 3 per class. No exact description overlaps with training. These use different wording/fictional merchants but remain small, synthetic and relatively clean examples. Shared category vocabulary is intentional.

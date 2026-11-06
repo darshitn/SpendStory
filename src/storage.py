@@ -6,13 +6,14 @@ safe category updates, and budget management.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 import os
 from pathlib import Path
 import sqlite3
 from typing import Optional
 
+from src.categorizer import get_default_categorizer
 from src.transactions import Transaction, parse_transactions_csv
 
 
@@ -358,6 +359,16 @@ class Database:
         if errors:
             raise ValueError(f"Failed to parse demo CSV: {'; '.join(errors)}")
 
+        for index, tx in enumerate(transactions):
+            if tx.type == "expense" and not tx.category:
+                prediction = get_default_categorizer().predict(tx.description)
+                transactions[index] = replace(
+                    tx,
+                    category=prediction.category,
+                    review_status=prediction.review_status,
+                    model_score=prediction.model_score,
+                )
+
         res = self.save_transactions(transactions)
 
         # Standard default budgets for student demo
@@ -370,16 +381,24 @@ class Database:
             "Entertainment": 80000,  # INR 800
         }
 
-        for ym in ["2026-10", "2026-11"]:
-            for cat, amount in default_budgets.items():
-                # Only insert if no budget already set
-                with self.get_connection() as conn:
-                    cursor = conn.cursor()
-                    cursor.execute(
-                        "SELECT budget_paise FROM budgets WHERE year_month = ? AND category = ?",
-                        (ym, cat),
-                    )
-                    if cursor.fetchone() is None:
-                        self.set_budget(ym, cat, amount)
+        november_budgets = default_budgets | {
+            "Food": 420000,
+            "Transport": 140000,
+            "Education": 200000,
+            "Bills": 350000,
+            "Entertainment": 120000,
+        }
+        demo_months = sorted({tx.date[:7] for tx in transactions})
+        budget_rows = [
+            (month, category, amount)
+            for month in demo_months
+            for category, amount in (november_budgets if month == "2026-11" else default_budgets).items()
+        ]
+        with self.get_connection() as conn:
+            conn.executemany(
+                "INSERT OR IGNORE INTO budgets (year_month, category, budget_paise) VALUES (?, ?, ?)",
+                budget_rows,
+            )
+            conn.commit()
 
         return res

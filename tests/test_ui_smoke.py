@@ -87,9 +87,9 @@ def test_hosted_demo_seeds_and_isolates_each_session(monkeypatch, tmp_path):
     monkeypatch.setenv("FINANCE_DB_PATH", str(local_path))
     first = AppTest.from_file(APP_PATH, default_timeout=30).run()
     assert not first.exception
-    assert first.query_params["month"] == "2026-10"
+    assert first.query_params["month"] == "2026-11"
     first_db = first.session_state["demo_db"]
-    assert len(first_db.get_transactions()) == 41
+    assert len(first_db.get_transactions()) == 218
     first_db.set_budget("2026-10", "Food", 123456)
     first.run()
     assert first.session_state["demo_db"].get_budgets("2026-10")["Food"] == 123456
