@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: spendstory
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: python -m pip install -r requirements.txt
+    startCommand: python -m streamlit run app.py --server.address 0.0.0.0 --server.port "$PORT"
+    healthCheckPath: /_stcore/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.14"
+      - key: SPENDSTORY_DEMO
+        value: "1"

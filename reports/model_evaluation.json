@@ -1,0 +1,250 @@
+{
+  "metadata": {
+    "model_type": "TF-IDF + LogisticRegression",
+    "training_samples": 72,
+    "holdout_samples": 18,
+    "confidence_threshold": 0.25,
+    "training_path": "data/training/categories.csv",
+    "holdout_path": "data/evaluation/categories_holdout.csv"
+  },
+  "metrics": {
+    "overall_accuracy": 0.2778,
+    "macro_precision": 0.5714,
+    "macro_recall": 0.2381,
+    "macro_f1": 0.3286,
+    "abstention_count": 13,
+    "abstention_rate": 0.7222
+  },
+  "per_category_metrics": {
+    "Bills": {
+      "precision": 1.0,
+      "recall": 0.3333,
+      "f1_score": 0.5,
+      "support": 3.0
+    },
+    "Education": {
+      "precision": 1.0,
+      "recall": 0.3333,
+      "f1_score": 0.5,
+      "support": 3.0
+    },
+    "Entertainment": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "support": 3.0
+    },
+    "Food": {
+      "precision": 1.0,
+      "recall": 0.6667,
+      "f1_score": 0.8,
+      "support": 3.0
+    },
+    "Other": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "support": 0.0
+    },
+    "Shopping": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "support": 3.0
+    },
+    "Transport": {
+      "precision": 1.0,
+      "recall": 0.3333,
+      "f1_score": 0.5,
+      "support": 3.0
+    }
+  },
+  "samples": [
+    {
+      "description": "Harbor Diner lunch thali",
+      "true_category": "Food",
+      "predicted_category": "Food",
+      "model_score": 0.2798,
+      "review_status": "confirmed",
+      "is_abstention": false,
+      "reason": "Confident prediction",
+      "is_correct": true
+    },
+    {
+      "description": "Fresh Basket groceries rice and lentils",
+      "true_category": "Food",
+      "predicted_category": "Food",
+      "model_score": 0.2532,
+      "review_status": "confirmed",
+      "is_abstention": false,
+      "reason": "Confident prediction",
+      "is_correct": true
+    },
+    {
+      "description": "Morning Roastery coffee breakfast",
+      "true_category": "Food",
+      "predicted_category": "Other",
+      "model_score": 0.2457,
+      "review_status": "needs_review",
+      "is_abstention": true,
+      "reason": "Low model confidence (0.25 < 0.25)",
+      "is_correct": false
+    },
+    {
+      "description": "Green Line metro ride fare",
+      "true_category": "Transport",
+      "predicted_category": "Transport",
+      "model_score": 0.2846,
+      "review_status": "confirmed",
+      "is_abstention": false,
+      "reason": "Confident prediction",
+      "is_correct": true
+    },
+    {
+      "description": "Swift Wheels cab commute",
+      "true_category": "Transport",
+      "predicted_category": "Other",
+      "model_score": 0.2395,
+      "review_status": "needs_review",
+      "is_abstention": true,
+      "reason": "Low model confidence (0.24 < 0.25)",
+      "is_correct": false
+    },
+    {
+      "description": "Highway Pump petrol refill",
+      "true_category": "Transport",
+      "predicted_category": "Other",
+      "model_score": 0.2245,
+      "review_status": "needs_review",
+      "is_abstention": true,
+      "reason": "Low model confidence (0.22 < 0.25)",
+      "is_correct": false
+    },
+    {
+      "description": "Maple Apparel winter trousers",
+      "true_category": "Shopping",
+      "predicted_category": "Other",
+      "model_score": 0.0,
+      "review_status": "needs_review",
+      "is_abstention": true,
+      "reason": "Unrecognized vocabulary (out-of-vocabulary)",
+      "is_correct": false
+    },
+    {
+      "description": "Gadget Corner wireless mouse",
+      "true_category": "Shopping",
+      "predicted_category": "Other",
+      "model_score": 0.0,
+      "review_status": "needs_review",
+      "is_abstention": true,
+      "reason": "Unrecognized vocabulary (out-of-vocabulary)",
+      "is_correct": false
+    },
+    {
+      "description": "Urban Gear travel bag purchase",
+      "true_category": "Shopping",
+      "predicted_category": "Other",
+      "model_score": 0.2333,
+      "review_status": "needs_review",
+      "is_abstention": true,
+      "reason": "Low model confidence (0.23 < 0.25)",
+      "is_correct": false
+    },
+    {
+      "description": "North Academy statistics tuition",
+      "true_category": "Education",
+      "predicted_category": "Other",
+      "model_score": 0.22,
+      "review_status": "needs_review",
+      "is_abstention": true,
+      "reason": "Low model confidence (0.22 < 0.25)",
+      "is_correct": false
+    },
+    {
+      "description": "LearnSpace data science course",
+      "true_category": "Education",
+      "predicted_category": "Education",
+      "model_score": 0.3089,
+      "review_status": "confirmed",
+      "is_abstention": false,
+      "reason": "Confident prediction",
+      "is_correct": true
+    },
+    {
+      "description": "Scholar Press economics textbook",
+      "true_category": "Education",
+      "predicted_category": "Other",
+      "model_score": 0.2297,
+      "review_status": "needs_review",
+      "is_abstention": true,
+      "reason": "Low model confidence (0.23 < 0.25)",
+      "is_correct": false
+    },
+    {
+      "description": "FiberLink monthly broadband payment",
+      "true_category": "Bills",
+      "predicted_category": "Bills",
+      "model_score": 0.2993,
+      "review_status": "confirmed",
+      "is_abstention": false,
+      "reason": "Confident prediction",
+      "is_correct": true
+    },
+    {
+      "description": "Civic Power electricity invoice",
+      "true_category": "Bills",
+      "predicted_category": "Other",
+      "model_score": 0.2123,
+      "review_status": "needs_review",
+      "is_abstention": true,
+      "reason": "Low model confidence (0.21 < 0.25)",
+      "is_correct": false
+    },
+    {
+      "description": "Residence monthly room rental",
+      "true_category": "Bills",
+      "predicted_category": "Other",
+      "model_score": 0.2163,
+      "review_status": "needs_review",
+      "is_abstention": true,
+      "reason": "Low model confidence (0.22 < 0.25)",
+      "is_correct": false
+    },
+    {
+      "description": "Galaxy Screens film admission",
+      "true_category": "Entertainment",
+      "predicted_category": "Other",
+      "model_score": 0.0,
+      "review_status": "needs_review",
+      "is_abstention": true,
+      "reason": "Unrecognized vocabulary (out-of-vocabulary)",
+      "is_correct": false
+    },
+    {
+      "description": "Melody Pass music subscription",
+      "true_category": "Entertainment",
+      "predicted_category": "Other",
+      "model_score": 0.2368,
+      "review_status": "needs_review",
+      "is_abstention": true,
+      "reason": "Low model confidence (0.24 < 0.25)",
+      "is_correct": false
+    },
+    {
+      "description": "Fun Arena arcade session",
+      "true_category": "Entertainment",
+      "predicted_category": "Other",
+      "model_score": 0.2207,
+      "review_status": "needs_review",
+      "is_abstention": true,
+      "reason": "Low model confidence (0.22 < 0.25)",
+      "is_correct": false
+    }
+  ],
+  "honest_limitations": [
+    "Model is trained exclusively on synthetic student transaction descriptions.",
+    "Evaluation dataset has 18 synthetic holdout records and does not reflect broad banking production data.",
+    "Model scores are uncalibrated softmax outputs and must not be interpreted as posterior probabilities.",
+    "Vocabulary gaps or unrecognized merchant names trigger abstention ('Other' / 'needs_review')."
+  ]
+}

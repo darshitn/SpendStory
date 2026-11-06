@@ -9,7 +9,7 @@ SpendStory is an AI-assisted finance dashboard for students. Track income, expen
 ## Visual Design Reference
 The user interface is modeled directly on the **Money Management Dashboard** design by Atiqur Rahman for ILmix Studio ([Dribbble Reference](https://dribbble.com/shots/27090441-Money-Management-Dashboard)).
 - **Pale Lavender Canvas (`#E2E7F5`)**: High-contrast framing with rounded white application shell (`border-radius: 28px`).
-- **Quiet Left Sidebar (`#F8FAFD`)**: Wordmark branding, thin line navigation items with live review count badges, and an idempotent Fictional Demo action card.
+- **Quiet Left Sidebar (`#F8FAFD`)**: Wordmark branding, thin line navigation items with live review count badges, and a compact Demo tools menu.
 - **Four Financial Summary Cards**: Recorded Income, Recorded Expenses, Recorded Surplus, and Transfers Excluded.
 - **Asymmetric Visualization Layout**:
   - *70/30 Row*: Cumulative income and expense trends beside an interactive category doughnut.
@@ -24,7 +24,7 @@ The user interface is modeled directly on the **Money Management Dashboard** des
 3. **Idempotent Ingestion**: SHA-256 payload fingerprinting prevents duplicate entries upon re-importing identical files while safeguarding user manual category corrections and detecting ID conflicts.
 4. **Offline ML Categorization**: A scikit-learn TF-IDF + Logistic Regression pipeline trained on 72 student expenses. Implements vocabulary checks and confidence thresholds (0.25) to abstain to "Other (Needs Review)" on ambiguous or unknown descriptions.
 5. **Spreadsheet Injection Defense**: CSV export prepends a single apostrophe (`'`) to any cell beginning with `=`, `+`, `-`, `@`, `\t`, or `\r`.
-6. **100% Local & Offline**: Operates completely on local SQLite (`storage/finance.db`) without external API keys or cloud dependencies.
+6. **Runs locally without API keys**: The desktop setup stores records in SQLite (`storage/finance.db`). The hosted demo seeds a separate temporary SQLite ledger for each browser session.
 
 ---
 
@@ -69,7 +69,7 @@ py -3.12 -m venv .venv
 ```powershell
 .\.venv\Scripts\python.exe -m streamlit run app.py --server.address 127.0.0.1
 ```
-*Open your browser at `http://127.0.0.1:8501`. On first run, click **Load Fictional Demo** in the sidebar to populate the verified October and November datasets.*
+*Open your browser at `http://127.0.0.1:8501`. Click **Try sample data** on the empty Overview or under **Demo tools** in the sidebar to load the fictional October and November datasets.*
 
 ### 5. Automated Headless Browser Screen Captures
 ```powershell
@@ -78,6 +78,14 @@ py -3.12 -m venv .venv
 *Uses Chrome DevTools Protocol to capture real screenshots across desktop (1440x1000) and mobile (390x844) viewports into `docs/ui-implementation/`.*
 
 ---
+
+## Render demo
+
+Create a Blueprint from this repository’s `main` branch on Render. The root
+`render.yaml` defines the web service, Python version, and health check. It
+enables fictional demo mode, which preloads October and November and gives
+each browser session its own temporary SQLite ledger. Use the local setup for
+personal records or edits you want to keep.
 
 ## Project Structure
 ```

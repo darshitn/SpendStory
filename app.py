@@ -288,31 +288,43 @@ NEXORA_CSS = """
     transform: translateY(-1px);
 }
 
-/* Sidebar quick action card */
-.sidebar-promo-card {
-    background: linear-gradient(145deg, #F0F4FE 0%, #E7EDFD 100%);
-    border: 1px solid #D5E1FB;
-    border-radius: 14px;
-    padding: 12px;
-    margin-top: 18px;
+.sample-label {
+    display: inline-block; color: #44368a; background: #eeeafb;
+    border-radius: 6px; padding: 3px 8px; font-size: .78rem; font-weight: 650;
 }
-
-.sidebar-promo-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: #14182D;
-    margin-bottom: 3px;
+.review-reason {
+    background: #f4f1fb; color: #392b64; border-inline-start: 3px solid #8066c9;
+    border-radius: 6px; padding: 9px 12px; font-size: .88rem;
 }
-
-.sidebar-promo-desc {
-    font-size: 11px;
-    color: #5A6478;
-    line-height: 1.35;
-    margin-bottom: 10px;
+.st-key-holdout_explorer {
+    background: #f7f6fc; border: 1px solid #e7e2f5; border-radius: 12px; padding: 14px;
 }
+.st-key-budget_editor { background: #faf9ff; }
+.st-key-budget_editor [data-testid="stHorizontalBlock"]:has([data-testid="stSlider"]) {
+    padding: 8px 0; border-bottom: 1px solid #e9e5f3;
+}
+.budget-summary {
+    background: #f8f7fc; border: 1px solid #ebe7f5;
+    border-radius: 12px; padding: 14px 16px;
+}
+.budget-summary-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.budget-summary-head h3 { margin: 0; padding: 0; font-size: 1rem; color: #202461; }
+.budget-status { padding: 3px 8px; border-radius: 6px; background: #e9e6f8; color: #493987; font-size: .8rem; font-weight: 700; }
+.budget-summary.over .budget-status { background: #fbe5e8; color: #9f243c; }
+.budget-summary.on-track .budget-status { background: #dcf3ea; color: #175c49; }
+.budget-amounts, .budget-note { margin-top: 6px; color: #505b72; font-size: .85rem; }
+.budget-usage { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; margin-top: 8px; color: #505b72; font-size: .78rem; }
+.budget-summary .budget-progress-track { height: 7px; border-radius: 8px; overflow: hidden; }
+.budget-summary .budget-progress-fill { height: 100%; border-radius: inherit; background: #6d55d6; }
+.budget-summary.over .budget-progress-fill { background: #c04460; }
+.evaluation-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 145px), 1fr)); gap: 10px; }
+.evaluation-result { padding: 12px; border-radius: 8px; background: #fff; border: 1px solid #e7e2f5; color: #392b64; }
+.evaluation-result strong { display: block; font-size: 1.35rem; }
 
 /* Streamlit 1.66: the app view is the common parent of sidebar and main. */
 @media (min-width: 901px) {
+  /* The desktop sidebar is always visible, so the native header is redundant. */
+  [data-testid="stHeader"] { display: none !important; }
   [data-testid="stAppViewContainer"] {
     --frame-gutter: clamp(18px, 2.2vw, 42px);
     --frame-top: clamp(16px, 2.5vh, 30px);
@@ -339,7 +351,6 @@ NEXORA_CSS = """
     min-height: calc(100dvh - 2 * var(--frame-top) - 16px);
   }
 }
-[data-testid="stHeader"] { background: transparent !important; height: 0 !important; }
 [data-testid="stToolbar"], [data-testid="stAppDeployButton"] { display: none !important; }
 [data-testid="stMain"] { background: white !important; }
 [data-testid="stMainBlockContainer"] { max-width: none !important; padding: 0 16px 20px !important; }
@@ -376,17 +387,6 @@ NEXORA_CSS = """
 }
 [data-testid="stMain"] [data-testid="stHorizontalBlock"] { gap: 12px; }
 .nexora-logo { height: 48px; padding: 0; margin: 0; border-bottom: 1px solid #e5e9ef; }
-.st-key-dashboard_demo {
-  background: linear-gradient(160deg, #e6e6f8, #efedfa);
-  padding: 10px !important;
-  border: 1px solid #e1def4;
-  border-radius: 9px;
-}
-.st-key-dashboard_demo .sidebar-promo-card { margin: 0; padding: 0; text-align: center; background: transparent; border: 0; }
-.st-key-dashboard_demo .sidebar-promo-desc { margin: 0; }
-.st-key-dashboard_demo button p { white-space: nowrap !important; font-size: 12.5px !important; }
-.st-key-dashboard_demo [data-testid="stExpander"] { background: #fff; border-radius: 8px; }
-.st-key-dashboard_demo [data-testid="stExpander"] summary { padding: 5px 8px; }
 .panel-header { margin: 0; }
 .st-key-dashboard_toolbar { padding: 8px 0; border-bottom: 1px solid #e8ebf0; }
 @media (min-width: 901px) {
@@ -442,8 +442,12 @@ NEXORA_CSS = """
 }
 @media (max-width: 900px) {
   [data-testid="stMain"] { background: white !important; }
-  [data-testid="stMainBlockContainer"] { padding: 47px 12px 24px !important; }
-  [data-testid="stHeader"] { height: 48px !important; background: white !important; }
+  [data-testid="stMainBlockContainer"] { padding: 56px 12px 24px !important; }
+  [data-testid="stHeader"] {
+    height: 48px !important; min-height: 48px !important; background: white !important;
+    pointer-events: none;
+  }
+  [data-testid="stHeader"] button { pointer-events: auto; }
   [data-testid="stToolbar"] { display: flex !important; }
   [data-testid="stMain"] [data-testid="stHorizontalBlock"] { gap: 10px; }
 }
@@ -465,22 +469,34 @@ st.html(NEXORA_CSS)
 # Database & State Initialization
 # -----------------------------------------------------------------------------
 @st.cache_resource
-def get_database() -> Database:
-    return Database(os.environ.get("FINANCE_DB_PATH", "storage/finance.db"))
+def get_database(path: str) -> Database:
+    return Database(path)
 
 
-db = get_database()
+DEMO_CSV = Path("data/demo/transactions.csv")
+HOSTED_DEMO = os.environ.get("SPENDSTORY_DEMO") == "1"
+if HOSTED_DEMO:
+    # Keep each visitor's demo edits in their own Streamlit session.
+    if "demo_db" not in st.session_state:
+        demo_db = Database(":memory:")
+        demo_db.load_demo_data(DEMO_CSV)
+        st.session_state.demo_db = demo_db
+    db = st.session_state.demo_db
+else:
+    db = get_database(os.environ.get("FINANCE_DB_PATH", "storage/finance.db"))
 categorizer = get_default_categorizer()
 
 NAV_OPTIONS = ("Overview", "Transactions", "Budgets", "Category Review", "Model Evaluation")
-available_months = db.get_available_months() or ["2026-10", "2026-11"]
+ledger_months = db.get_available_months()
+available_months = ledger_months or ["2026-10", "2026-11"]
 
 # Direct query params initialize widgets; session state owns updates
 query_nav = st.query_params.get("nav")
 query_month = st.query_params.get("month")
 
 st.session_state.setdefault("active_nav", query_nav if query_nav in NAV_OPTIONS else "Overview")
-st.session_state.setdefault("selected_month", query_month if query_month in available_months else available_months[0])
+default_month = "2026-10" if HOSTED_DEMO and "2026-10" in available_months else available_months[0]
+st.session_state.setdefault("selected_month", query_month if query_month in available_months else default_month)
 st.session_state.setdefault("search_query", "")
 st.session_state.setdefault("tx_type_filter", "All")
 st.session_state.setdefault("tx_cat_filter", "All")
@@ -493,6 +509,29 @@ if st.session_state.selected_month not in available_months:
 def open_search_results() -> None:
     if st.session_state.search_query.strip():
         st.session_state.active_nav = "Transactions"
+
+
+def open_budgets() -> None:
+    st.session_state.active_nav = "Budgets"
+
+
+def close_budget_editor() -> None:
+    st.session_state.budget_editor_month = None
+
+
+def load_sample_data() -> None:
+    result = db.load_demo_data(DEMO_CSV)
+    st.session_state.selected_month = "2026-10"
+    message = f"Fictional sample data: {result.inserted} added, {result.skipped} already present."
+    if result.conflicts:
+        message += f" {len(result.conflicts)} conflicting IDs kept unchanged."
+    st.toast(message)
+
+
+@st.cache_data
+def demo_fingerprints(csv_bytes: bytes) -> set[str]:
+    transactions, _ = parse_transactions_csv(csv_bytes)
+    return {tx.fingerprint for tx in transactions}
 
 
 # -----------------------------------------------------------------------------
@@ -522,36 +561,25 @@ with st.sidebar:
 
     st.html('<div class="sidebar-spacer" aria-hidden="true"></div>')
 
-    with st.container(key="dashboard_demo"):
-        st.html(
-            """
-            <div class="sidebar-promo-card">
-                <div class="sidebar-promo-title">Fictional Demo</div>
-                <div class="sidebar-promo-desc">
-                    Explore the dashboard with sample spending and budgets.
-                </div>
-            </div>
-            """
-        )
+    with st.expander("Demo tools"):
+        st.caption("Load fictional student transactions and sample budgets.")
+        st.button("Try sample data", key="sidebar_sample_data", on_click=load_sample_data, width="stretch")
 
-        if st.button("Load Fictional Demo", type="primary", width="stretch"):
-            res = db.load_demo_data("data/demo/transactions.csv")
-            st.session_state.selected_month = "2026-10"
-            st.toast(f"Demo loaded! Inserted: {res.inserted}, Skipped: {res.skipped}")
+    with st.expander("Reset / Clear Data"):
+        st.caption("Clear this demo session’s ledger." if HOSTED_DEMO else "Erase local transactions and budgets stored in SQLite.")
+        confirm = st.checkbox("I confirm clearing all data", key="clear_confirm_cb")
+        if st.button("Clear All Data", type="secondary", disabled=not confirm, width="stretch"):
+            db.clear_all_data()
+            st.toast("Ledger cleared.")
             st.rerun()
-
-        with st.expander("Reset / Clear Data"):
-            st.caption("Erase local transactions and budgets stored in SQLite.")
-            confirm = st.checkbox("I confirm clearing all data", key="clear_confirm_cb")
-            if st.button("Clear All Data", type="secondary", disabled=not confirm, width="stretch"):
-                db.clear_all_data()
-                st.toast("Local data cleared successfully.")
-                st.rerun()
 
 
 # -----------------------------------------------------------------------------
 # Contextual Top Toolbar
 # -----------------------------------------------------------------------------
+if HOSTED_DEMO:
+    st.caption("Fictional demo · Use sample data only. Changes last for this browser session.")
+
 all_txs_for_month = db.get_transactions(year_month=st.session_state.selected_month)
 show_import_dialog = False
 
@@ -624,7 +652,7 @@ with st.container(key="dashboard_toolbar"):
         with toolbar_cols[0]:
             st.html('<h1 class="view-title">Budgets</h1>')
         with toolbar_cols[1]:
-            st.html('<div style="text-align:right; color:#64748B; font-size:12px; font-weight:500;">Active Month:</div>')
+            st.html('<div style="text-align:right; color:#64748B; font-size:12px; font-weight:500;">Budget month</div>')
         with toolbar_cols[2]:
             st.selectbox(
                 "Month",
@@ -632,6 +660,7 @@ with st.container(key="dashboard_toolbar"):
                 key="selected_month",
                 format_func=lambda ym: datetime.strptime(ym, "%Y-%m").strftime("%B %Y"),
                 label_visibility="collapsed",
+                on_change=close_budget_editor,
             )
 
     elif st.session_state.active_nav == "Category Review":
@@ -663,7 +692,7 @@ with st.container(key="dashboard_toolbar"):
         with toolbar_cols[0]:
             st.html('<h1 class="view-title">Model Evaluation</h1>')
         with toolbar_cols[1]:
-            st.html('<div style="text-align:right;"><span style="font-size:11.5px; background:#EDF0F7; color:#3B4863; padding:5px 10px; border-radius:12px; font-weight:600;">📊 Offline Holdout Dataset (Independent of Month)</span></div>')
+            st.html('<div style="text-align:right;"><span style="font-size:11.5px; background:#EDF0F7; color:#3B4863; padding:5px 10px; border-radius:12px; font-weight:600;">Fictional test data</span></div>')
 
 # Sync query parameters with navigation & month
 if query_nav != st.session_state.active_nav or query_month != st.session_state.selected_month:
@@ -675,6 +704,8 @@ if show_import_dialog or st.session_state.get("show_import_panel", False):
     with st.container(border=True):
         st.subheader("Import Transactions CSV")
         st.caption("Upload a UTF-8 CSV with headers: `id,date,description,amount,type,category`. Limit 2 MB, 10,000 rows.")
+        if HOSTED_DEMO:
+            st.caption("Use fictional transactions here. For personal records, run SpendStory locally.")
         uploaded_file = st.file_uploader("Select CSV file", type=["csv"], label_visibility="collapsed")
         if uploaded_file:
             content_bytes = uploaded_file.read()
@@ -744,6 +775,16 @@ if st.session_state.active_nav == "Overview":
         <div class="greeting-subtext">Your money overview · {month_name}</div>
         '''
     )
+
+    if not ledger_months:
+        with st.container(border=True):
+            st.markdown("**Explore SpendStory with a sample ledger**")
+            st.caption("Load two months of fictional student transactions and budgets.")
+            st.button("Try sample data", key="overview_sample_data", type="primary", on_click=load_sample_data)
+    elif all_txs_for_month:
+        fingerprints = demo_fingerprints(DEMO_CSV.read_bytes())
+        if any(tx.fingerprint in fingerprints for tx in all_txs_for_month):
+            st.html('<span class="sample-label">Includes fictional sample data</span>')
 
     summary = calculate_monthly_summary(all_txs_for_month, st.session_state.selected_month)
 
@@ -847,11 +888,9 @@ if st.session_state.active_nav == "Overview":
             st.html('<div class="budget-preview">' + "".join(rows) + '</div>')
             if len(comparisons) > 5:
                 st.caption(f"Showing 5 of {len(comparisons)} categories.")
-            if st.button("Manage all budgets →", key="btn_goto_budgets", width="stretch"):
-                st.session_state.active_nav = "Budgets"
-                st.rerun()
         else:
             st.caption("Set a budget to track spending against a target.")
+        st.button("Manage all budgets →", key="btn_goto_budgets", width="stretch", on_click=open_budgets)
 
     with comparison, st.container(key="dashboard_comparison"):
         multi_month = calculate_multi_month_comparison(db.get_transactions())
@@ -1115,120 +1154,96 @@ elif st.session_state.active_nav == "Transactions":
 # VIEW 3: BUDGETS
 # =============================================================================
 elif st.session_state.active_nav == "Budgets":
-    month_name = datetime.strptime(st.session_state.selected_month, "%Y-%m").strftime("%B %Y")
-    
-    b_head_col, b_act_col = st.columns([7, 3], vertical_alignment="center")
-    with b_head_col:
-        st.subheader(f"Category Budgets — {month_name}")
-        st.caption("Configure category targets, track utilization, and review deterministic spending rebalancing suggestions.")
-    with b_act_col:
-        edit_budgets_clicked = st.button("✏️ Configure Budgets", type="primary", width="stretch")
-        if edit_budgets_clicked:
-            st.session_state.show_budget_editor = not st.session_state.get("show_budget_editor", False)
-
-    summary = calculate_monthly_summary(all_txs_for_month, st.session_state.selected_month)
-    current_budgets = db.get_budgets(st.session_state.selected_month)
-
-    # Budget Configuration Editor
-    if st.session_state.get("show_budget_editor", False):
-        with st.container(border=True):
-            st.markdown("#### Set Monthly Category Targets")
-            st.caption("Check 'Has Target' to set a budget limit in Rupees (₹). Uncheck to remove target ('No Target').")
-            with st.form("set_budgets_form"):
-                budget_entries = {}
-                for cat in sorted(list(ALLOWED_EXPENSE_CATEGORIES)):
-                    cur_paise = current_budgets.get(cat)
-                    has_target_default = cur_paise is not None
-                    cur_inr = float(cur_paise / 100.0) if cur_paise is not None else 0.0
-
-                    c_check, c_input = st.columns([2, 5])
-                    with c_check:
-                        has_target = st.checkbox(f"Track {cat}", value=has_target_default, key=f"chk_target_{cat}")
-                    with c_input:
-                        val = st.number_input(
-                            f"{cat} Target (₹)",
-                            min_value=0.0,
-                            value=cur_inr,
-                            step=100.0,
-                            disabled=not has_target,
-                            key=f"num_target_{cat}",
-                        )
-                    budget_entries[cat] = (has_target, val)
-
-                b_btn1, b_btn2 = st.columns([2, 8])
-                with b_btn1:
-                    save_budgets = st.form_submit_button("Save Budgets", type="primary", width="stretch")
-                with b_btn2:
-                    cancel_budgets = st.form_submit_button("Cancel", width="stretch")
-
-                if cancel_budgets:
-                    st.session_state.show_budget_editor = False
-                    st.rerun()
-
-                if save_budgets:
-                    for cat, (has_target, val) in budget_entries.items():
-                        if has_target:
-                            paise_val = int(round(val * 100))
-                            db.set_budget(st.session_state.selected_month, cat, paise_val)
-                        else:
-                            db.delete_budget(st.session_state.selected_month, cat)
-                    st.session_state.show_budget_editor = False
-                    st.toast("Budgets updated successfully!")
-                    st.rerun()
-
-    # Re-calculate comparisons after any potential changes
-    current_budgets = db.get_budgets(st.session_state.selected_month)
+    month = st.session_state.selected_month
+    month_name = datetime.strptime(month, "%Y-%m").strftime("%B %Y")
+    summary = calculate_monthly_summary(all_txs_for_month, month)
+    current_budgets = db.get_budgets(month)
     comparisons = calculate_budget_comparisons(summary.expense_by_category_paise, current_budgets)
 
-    # Cohesive Unified Budget Cards List
-    st.markdown("#### Category Budget Utilization & Recommendations")
+    title_col, action_col = st.columns([3, 1], vertical_alignment="center")
+    with title_col:
+        st.subheader(f"Category budgets · {month_name}")
+        st.caption("See what you spent and how much room is left in each category.")
+    with action_col:
+        if st.button("Configure budgets", key="configure_budgets", type="primary", width="stretch"):
+            st.session_state.budget_editor_month = month
+
+    if st.session_state.get("budget_editor_month") == month:
+        with st.container(key="budget_editor", border=True):
+            st.markdown("#### Set your monthly limits")
+            st.caption("Drag each slider to set a target. Turn tracking off to remove a target. A ₹0 target means no spending.")
+            budget_entries = {}
+            for cat in sorted(ALLOWED_EXPENSE_CATEGORIES):
+                saved = current_budgets.get(cat)
+                spent = summary.expense_by_category_paise.get(cat, 0)
+                # Keep old amounts selectable even if they fall between the slider steps.
+                upper = max(1_000_000, 2 * max(saved or 0, spent))
+                step = max(5_000, ((upper + 999_999) // 1_000_000) * 5_000)
+                options = sorted(set(range(0, upper + step, step)) | {saved or 0})
+                with st.container(key=f"budget_control_{cat}"):
+                    track_col, slider_col = st.columns([1, 3], vertical_alignment="center")
+                    with track_col:
+                        enabled = st.toggle(f"Track {cat}", value=saved is not None, key=f"budget_track_{month}_{cat}")
+                    with slider_col:
+                        target = st.select_slider(
+                            f"{cat} target", options=options, value=saved or 0,
+                            format_func=format_inr, disabled=not enabled, key=f"budget_slider_{month}_{cat}",
+                        )
+                    budget_entries[cat] = target if enabled else None
+
+            save_col, cancel_col = st.columns([1, 3])
+            with save_col:
+                save = st.button("Save budgets", key="save_budget_targets", type="primary", width="stretch")
+            with cancel_col:
+                cancel = st.button("Cancel", key="cancel_budget_targets")
+            if save:
+                changed = {cat: target for cat, target in budget_entries.items() if current_budgets.get(cat) != target}
+                db.save_budget_targets(month, changed)
+                st.toast(f"Budgets saved for {month_name}.")
+            if save or cancel:
+                st.session_state.budget_editor_month = None
+                st.rerun()
+
+    st.markdown("#### Spending against your targets")
+    if not comparisons:
+        st.info("Set a target or add an expense to start tracking a category.")
+
+    # Put categories that need attention ahead of the categories on track.
+    comparisons.sort(key=lambda comp: (not comp.is_over, comp.budget_paise is not None, comp.category))
     for comp in comparisons:
-        with st.container(border=True):
-            b_top1, b_top2 = st.columns([6, 4], vertical_alignment="center")
-            with b_top1:
-                st.markdown(f"### {comp.category}")
-            with b_top2:
-                if comp.budget_paise is None:
-                    st.html('<div style="text-align:right;"><span class="badge-secondary" style="padding:4px 8px; border-radius:6px; background:#F1F5F9; color:#64748B; font-size:11px; font-weight:600;">⚪ No Target Set</span></div>')
-                elif comp.is_over:
-                    st.html(f'<div style="text-align:right;"><span class="badge-overbudget">⚠️ Exceeded by {format_inr(comp.delta_paise)}</span></div>')
-                else:
-                    st.html('<div style="text-align:right;"><span class="badge-confirmed">✅ Within Budget</span></div>')
+        spent_label = format_inr(comp.spent_paise)
+        if comp.budget_paise is None:
+            status, tone, note = "No target", "neutral", "Set a target to track this category."
+            target_label = "—"
+        elif comp.is_over:
+            status, tone = f"{format_inr(comp.delta_paise)} over", "over"
+            note = "Check upcoming expenses in this category before spending more."
+            target_label = format_inr(comp.budget_paise)
+        else:
+            status = "At target" if comp.delta_paise == 0 else f"{format_inr(-comp.delta_paise)} left"
+            tone, note = "on-track", ""
+            target_label = format_inr(comp.budget_paise)
 
-            # Metric triplets: Target | Spent | Balance
-            m_col1, m_col2, m_col3 = st.columns(3)
-            with m_col1:
-                target_str = format_inr(comp.budget_paise) if comp.budget_paise is not None else "No target"
-                st.metric("Target Budget", target_str)
-            with m_col2:
-                st.metric("Actual Spend", format_inr(comp.spent_paise))
-            with m_col3:
-                if comp.budget_paise is not None:
-                    remaining_paise = comp.budget_paise - comp.spent_paise
-                    rem_label = "Remaining" if remaining_paise >= 0 else "Overspend"
-                    st.metric(rem_label, format_inr(remaining_paise))
-                else:
-                    st.metric("Balance", "N/A")
-
-            # Bounded progress track
-            progress = min(100.0, comp.percent_used or 0.0)
-            fill_color = "#EF4444" if comp.is_over else "#10B981"
-            pct_label = f"{comp.percent_used:.1f}% used" if comp.percent_used is not None else "No target set"
-
-            st.html(
-                f'''
-                <div style="margin: 8px 0 4px 0;">
-                    <div style="display:flex; justify-content:space-between; font-size:11px; color:#64748B;">
-                        <span>Progress</span>
-                        <span><b>{pct_label}</b></span>
-                    </div>
-                    <div class="budget-progress-track">
-                        <div class="budget-progress-fill" style="width:{progress}%; background:{fill_color};"></div>
-                    </div>
-                </div>
-                '''
+        usage = ""
+        if comp.budget_paise and comp.percent_used is not None:
+            progress = min(100.0, comp.percent_used)
+            usage = (
+                f'<div class="budget-usage" role="meter" aria-label="{html.escape(comp.category)} budget used" '
+                f'aria-valuemin="0" aria-valuemax="100" aria-valuenow="{progress}" '
+                f'aria-valuetext="{comp.percent_used:.1f}% used">'
+                f'<div class="budget-progress-track"><div class="budget-progress-fill" style="width:{progress}%"></div></div>'
+                f'<span>{comp.percent_used:.0f}% used</span></div>'
             )
-            st.caption(f"💡 **Suggestion:** {comp.suggestion}")
+        note_html = f'<div class="budget-note">{note}</div>' if note else ""
+        st.html(
+            f'''<article class="budget-summary {tone}">
+                <div class="budget-summary-head"><h3>{html.escape(comp.category)}</h3>
+                    <span class="budget-status">{status}</span></div>
+                <div class="budget-amounts"><strong>{spent_label}</strong> spent
+                    <span aria-hidden="true">·</span> <strong>{target_label}</strong> target</div>
+                {usage}{note_html}
+            </article>'''
+        )
 
 
 # =============================================================================
@@ -1264,34 +1279,40 @@ elif st.session_state.active_nav == "Category Review":
     else:
         st.warning(f"**{len(pending_txs)}** transaction(s) require human review or confirmation.")
 
+        cat_options = sorted(ALLOWED_EXPENSE_CATEGORIES)
         for tx in pending_txs:
             with st.container(border=True):
-                c_cols = st.columns([1.5, 4.2, 1.6, 2.7, 2.0], vertical_alignment="center")
-                with c_cols[0]:
-                    st.write(f"**{tx.date}**")
-                    st.html(f'<span style="font-size:10px; color:#94A3B8; font-family:monospace;">{tx.id[:12]}…</span>')
-                with c_cols[1]:
-                    st.write(f"**{html.escape(tx.description)}**")
-                    score_str = f"Model Score: {tx.model_score:.2f} (Uncalibrated ML confidence)" if tx.model_score is not None else "Model Score: N/A"
-                    reason = "Flagged because model confidence is below the review threshold (0.25). Likely contains unfamiliar or ambiguous keywords."
-                    st.html(f'<div style="font-size:11px; color:#64748B;">{score_str}</div><div style="font-size:11px; color:#D97706; margin-top:2px;">⚠️ {reason}</div>')
-                with c_cols[2]:
-                    st.html(f'<span style="font-weight:700; color:#182263; font-variant-numeric:tabular-nums;">{format_inr(tx.amount_paise)}</span>')
-                with c_cols[3]:
-                    cat_options = sorted(list(ALLOWED_EXPENSE_CATEGORIES))
-                    cur_idx = cat_options.index(tx.category) if tx.category in cat_options else 0
+                st.html(f"<strong>{html.escape(tx.description)}</strong>")
+                st.caption(f"{tx.date} · {format_inr(tx.amount_paise)} · Saved category: {tx.category or 'Unassigned'}")
+
+                reason = "This record was marked for review. No model reason was recorded."
+                if tx.category_source == "model":
+                    check = categorizer.predict(tx.description)
+                    if not check.is_abstention:
+                        reason = f"The current model suggests {check.category}. This record is still awaiting confirmation."
+                    elif check.reason.startswith("Unrecognized vocabulary"):
+                        reason = "The current model found no words or phrases it recognized from training."
+                    elif check.reason == "Empty description":
+                        reason = "The current model needs a description to make a suggestion."
+                    else:
+                        reason = (
+                            f"The current model scored its best match at {check.model_score:.4f}, "
+                            f"below its {categorizer.confidence_threshold:.2f} cutoff."
+                        )
+                st.html(f'<div class="review-reason"><strong>Why this needs review</strong><br>{html.escape(reason)}</div>')
+
+                choice_col, confirm_col = st.columns([3, 2], vertical_alignment="bottom")
+                with choice_col:
                     chosen_cat = st.selectbox(
-                        "Confirm Category",
-                        options=cat_options,
-                        index=cur_idx,
+                        "Category to save", options=cat_options,
+                        index=cat_options.index(tx.category) if tx.category in cat_options else None,
                         key=f"rev_cat_{tx.id}",
-                        label_visibility="collapsed",
                     )
-                with c_cols[4]:
-                    btn_confirm = st.button("Confirm Category", key=f"btn_confirm_{tx.id}", type="primary", width="stretch")
-                    if btn_confirm:
+                with confirm_col:
+                    if st.button("Confirm category", key=f"btn_confirm_{tx.id}", type="primary",
+                                 width="stretch", disabled=chosen_cat is None):
                         db.update_transaction_category(tx.id, chosen_cat, review_status="confirmed", category_source="manual")
-                        st.toast(f"Confirmed {tx.id} as {chosen_cat}")
+                        st.toast(f"Confirmed as {chosen_cat}")
                         st.rerun()
 
 
@@ -1299,73 +1320,64 @@ elif st.session_state.active_nav == "Category Review":
 # VIEW 5: MODEL EVALUATION & TRANSPARENCY
 # =============================================================================
 elif st.session_state.active_nav == "Model Evaluation":
-    st.subheader("Machine Learning Model Evaluation & Transparency")
-    st.caption("Empirical reporting on offline TF-IDF + Logistic Regression classification against an untouched holdout dataset.")
-
-    st.info(
-        "📌 **Offline Evaluation Notice:** The statistics and matrix below evaluate the categorizer on an independent, "
-        "synthetic holdout validation set of 18 student transactions. These metrics do not reflect the active monthly ledger."
-    )
+    st.caption("We tested the category model on fictional transactions it had never seen during training.")
 
     eval_json_path = Path("reports/model_evaluation.json")
     if eval_json_path.exists():
-        with open(eval_json_path, "r", encoding="utf-8") as f:
-            report_data = json.load(f)
+        with eval_json_path.open(encoding="utf-8") as report_file:
+            report_data = json.load(report_file)
 
-        meta = report_data.get("metadata", {})
-        metrics = report_data.get("metrics", {})
-        per_cat = report_data.get("per_category_metrics", {})
+        meta = report_data["metadata"]
+        samples = report_data["samples"]
+        correct_count = sum(not sample["is_abstention"] and sample["is_correct"] for sample in samples)
+        review_count = sum(sample["is_abstention"] for sample in samples)
+        classified_count = len(samples) - review_count
+        incorrect_count = classified_count - correct_count
 
-        e_cols = st.columns(4)
-        with e_cols[0]:
-            st.metric("Training Samples", meta.get("training_samples", 0), help="Number of verified examples in training split")
-        with e_cols[1]:
-            st.metric("Holdout Samples", meta.get("holdout_samples", 0), help="Independent holdout validation examples")
-        with e_cols[2]:
-            st.metric("Overall Accuracy", f"{metrics.get('overall_accuracy', 0.0) * 100:.1f}%", help="Correct classifications over all 18 holdout examples")
-        with e_cols[3]:
-            st.metric("Abstention Rate", f"{metrics.get('abstention_rate', 0.0) * 100:.1f}%", help="Percentage of examples routed to human review (below 0.25 confidence)")
-
-        m_sub1, m_sub2, m_sub3, m_sub4 = st.columns(4)
-        with m_sub1:
-            st.metric("Model Coverage", f"{metrics.get('coverage', 0.0) * 100:.1f}%")
-        with m_sub2:
-            non_abstained = metrics.get("non_abstained", 0)
-            correct_na = metrics.get("correct_non_abstained", 0)
-            na_acc = (correct_na / non_abstained * 100.0) if non_abstained > 0 else 0.0
-            st.metric("Non-Abstained Accuracy", f"{na_acc:.1f}%", help="Accuracy on examples the model chose to predict")
-        with m_sub3:
-            st.metric("Confidence Threshold", f"{meta.get('confidence_threshold', 0.25):.2f}")
-        with m_sub4:
-            st.metric("Classification Model", "TF-IDF + LogReg")
-
-        st.markdown("#### Per-Category Holdout Performance")
-        st.caption("Breakdown of precision, recall, and support across expense categories.")
-
-        table_rows = []
-        for cat, data in per_cat.items():
-            supp = data.get("support", 0)
-            prec = data.get("precision", 0.0)
-            rec = data.get("recall", 0.0)
-            f1 = data.get("f1_score", 0.0)
-            table_rows.append({
-                "Category": cat,
-                "Holdout Support": supp,
-                "Precision": f"{prec * 100:.1f}%" if supp > 0 else "N/A",
-                "Recall": f"{rec * 100:.1f}%" if supp > 0 else "N/A",
-                "F1-Score": f"{f1 * 100:.1f}%" if supp > 0 else "N/A",
-            })
-        st.dataframe(pd.DataFrame(table_rows), width="stretch", hide_index=True)
-
-        with st.expander("📖 Methodological Disclosures & Honest Limitations"):
-            st.markdown(
-                """
-                - **Explainability First:** The model combines a linear classifier with an explicit vocabulary coverage check. When descriptions contain out-of-vocabulary or ambiguous tokens, it routes them to human review rather than hallucinating categories.
-                - **Why Accuracy is 27.8%:** Standard logistic regression without abstention forces a guess on every token. With our safety threshold (0.25), 72.2% of holdout examples abstain to review. On non-abstained predictions, accuracy is **100.0%**.
-                - **Privacy Sovereignty:** All inference is executed locally using `scikit-learn`. Zero transaction text or telemetry leaves the device.
-                """
+        with st.container(key="holdout_explorer"):
+            st.subheader(f"What happened in {len(samples)} test transactions?")
+            st.html(
+                f'''<div class="evaluation-results">
+                    <div class="evaluation-result"><strong>{correct_count}</strong>Correctly categorized</div>
+                    <div class="evaluation-result"><strong>{review_count}</strong>Asked for human review</div>
+                    <div class="evaluation-result"><strong>{incorrect_count}</strong>Wrong category</div>
+                </div>'''
             )
-            for lim in report_data.get("honest_limitations", []):
-                st.write(f"• {lim}")
+            st.caption("When the model cannot make a strong suggestion, it leaves the category for a person to confirm.")
+
+        if samples:
+            with st.expander("Explore individual examples"):
+                def example_label(index: int) -> str:
+                    sample = samples[index]
+                    if sample["is_abstention"]:
+                        result = "Needs review"
+                    else:
+                        result = "Correct" if sample["is_correct"] else "Incorrect"
+                    return f"{result} · {sample['description']}"
+
+                index = st.selectbox("Choose a test transaction", range(len(samples)), format_func=example_label)
+                example = samples[index]
+                response = "Asked for human review" if example["is_abstention"] else example["predicted_category"]
+                st.write(f"**Correct category** · {example['true_category']}")
+                st.write(f"**What the model did** · {response}")
+                if example["is_abstention"]:
+                    if example["reason"].startswith("Unrecognized vocabulary"):
+                        st.caption("The description contained no words or phrases the model recognized.")
+                    elif example["reason"].startswith("Low model confidence"):
+                        st.caption("The model found a possible category, but the score was too low to use it.")
+                    else:
+                        st.caption(example["reason"])
+
+        with st.expander("Technical details"):
+            st.write(f"TF-IDF + logistic regression trained on {meta['training_samples']} examples.")
+            st.write(f"**Overall accuracy** · {correct_count}/{len(samples)} test examples" if samples else "No test examples.")
+            st.write(f"**Coverage** · {classified_count}/{len(samples)} classified automatically" if samples else "Coverage unavailable.")
+            st.write(
+                f"**Accuracy on predictions** · {correct_count}/{classified_count}"
+                if classified_count else "Accuracy on predictions is unavailable because the model made no predictions."
+            )
+            st.caption(f"Decision cutoff: {meta['confidence_threshold']:.2f}. The test data are synthetic.")
+            per_category = pd.DataFrame.from_dict(report_data["per_category_metrics"], orient="index")
+            st.dataframe(per_category.rename_axis("Category").reset_index(), width="stretch", hide_index=True)
     else:
         st.info("Evaluation report not found. Run `python scripts/evaluate_model.py` to generate it.")

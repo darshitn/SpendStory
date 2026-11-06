@@ -30,6 +30,7 @@ Follow this script step-by-step during your project demonstration.
   - Truthful dual line/area progression from dated transactions (no fabricated curves).
 - Showcase the **Monthly Expenses Breakdown** doughnut chart (30% width):
   - Category shares with centered ₹9,900.00 total expense label.
+  - October breakdown: Food ₹1,400, Transport ₹600, Shopping ₹2,000, Education ₹2,000, Bills ₹2,900, and Entertainment ₹1,000.
 - Showcase the **Monthly Budgets** panel (bottom-left 30%):
   - Progress bars against targets and deterministic suggestions.
 - Showcase the **Monthly Income vs Expenses Comparison** (bottom-right 70%):
@@ -52,7 +53,7 @@ Follow this script step-by-step during your project demonstration.
 
 ### Step 5: Idempotency & Safe Export Demonstration (3:30 – 4:15)
 - In the top toolbar, click **Export CSV** to demonstrate downloading the sanitized CSV (formula injection characters `=, +, -, @` sanitized with single quotes).
-- In the sidebar, click **Load Fictional Demo** a second time:
+- Open **Demo tools** in the sidebar and click **Try sample data** a second time:
   - Show the notification: `Inserted: 0, Skipped: 41`.
   - Explain how SHA-256 fingerprinting ensures repeat imports never duplicate spending or overwrite existing user category corrections.
 
@@ -60,6 +61,7 @@ Follow this script step-by-step during your project demonstration.
 
 ### Step 6: Model Evaluation, Limitations & Conclusion (4:15 – 5:00)
 - Navigate to **Model Evaluation**:
-  - Show genuine holdout results from `reports/model_evaluation.json`: 72 training records, 18 holdout records, 27.8% raw accuracy, 72.2% abstention rate.
+  - Open **Explore individual examples** and compare a correct prediction with an example sent to human review.
+  - Show the results from `reports/model_evaluation.json`. The model trained on 72 synthetic examples and classified 5 of 18 holdout examples (27.8% coverage). All 5 predictions were correct, and the remaining 13 examples went to review (72.2%). Overall accuracy was 5 of 18 (27.8%).
   - Explain the transparency choice: *Unrecognized merchant vocabulary safely abstains to human review rather than outputting false confidence.*
 - Conclude with architecture summary: Python 3.12, Streamlit, SQLite, and scikit-learn working harmoniously in a complete, reproducible academic artifact.

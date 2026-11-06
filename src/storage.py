@@ -301,15 +301,22 @@ class Database:
 
     def set_budget(self, year_month: str, category: str, budget_paise: int) -> None:
         """Set or update the budget in paise for a category in a month."""
+        self.save_budget_targets(year_month, {category: budget_paise})
+
+    def save_budget_targets(self, year_month: str, targets: dict[str, int | None]) -> None:
+        """Save changed targets together. None removes the target for that category."""
+        updates = [(year_month, category, amount) for category, amount in targets.items() if amount is not None]
+        removals = [(year_month, category) for category, amount in targets.items() if amount is None]
         with self.get_connection() as conn:
-            conn.execute(
+            conn.executemany(
                 """
                 INSERT INTO budgets (year_month, category, budget_paise)
                 VALUES (?, ?, ?)
                 ON CONFLICT(year_month, category) DO UPDATE SET budget_paise = excluded.budget_paise
                 """,
-                (year_month, category, budget_paise),
+                updates,
             )
+            conn.executemany("DELETE FROM budgets WHERE year_month = ? AND category = ?", removals)
             conn.commit()
 
     def delete_budget(self, year_month: str, category: str) -> bool:

@@ -13,6 +13,7 @@ models/*
 !models/.gitkeep
 reports/*
 !reports/.gitkeep
+!reports/model_evaluation.json
 data/private/
 handoff/ui-experiments/
 *.log

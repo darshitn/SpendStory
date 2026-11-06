@@ -56,6 +56,7 @@ The visual design is modeled on the Dribbble "Nexora" Money Management Dashboard
 - **Four Financial Summary Cards:**
   - *Recorded Income:* Displays positive allowances (`₹15,000.00` in Oct/Nov).
   - *Recorded Expenses:* Displays spending outflow (`₹9,900.00` in Oct, `₹8,340.00` in Nov).
+    - October demo expenses by category are Food ₹1,400, Transport ₹600, Shopping ₹2,000, Education ₹2,000, Bills ₹2,900, and Entertainment ₹1,000, as recorded in `data/demo/EXPECTED_TOTALS.json`.
   - *Recorded Surplus:* Truthful income minus expense delta (`₹5,100.00` in Oct, `₹6,660.00` in Nov).
   - *Transfers Excluded:* Internal account movements (`₹2,000.00` each month) isolated from budget totals.
 - **Asymmetric Visualization Layout:**
@@ -84,13 +85,15 @@ The visual design is modeled on the Dribbble "Nexora" Money Management Dashboard
 Evaluated strictly using `scripts/evaluate_model.py` without data contamination:
 - **Holdout Samples:** 18 records
 - **Overall Accuracy:** 27.8% (5 / 18 correct without manual intervention)
+- **Coverage:** 27.8% (5 / 18 classified automatically)
+- **Accuracy on Predictions:** 100% (5 / 5 automatically classified examples)
 - **Macro-Averaged Precision:** 0.5714
 - **Macro-Averaged Recall:** 0.2381
 - **Macro-Averaged F1-Score:** 0.3286
 - **Abstention Count:** 13 / 18 (72.2% routed safely to human review)
 
 **Honest Scientific Appraisal:**  
-A small synthetic model trained on 72 examples cannot generalize to unseen merchant jargon (e.g. "Harbor Diner", "Morning Roastery", "Civic Power"). Rather than emitting misleading false positives, the abstention engine safely routed 72.2% of unfamiliar descriptions to human review. Arithmetic, sums, and budget suggestions are strictly deterministic and not mislabeled as AI.
+The model sent 13 of the 18 synthetic examples to human review. Its five correct predictions provide limited evidence about performance on real bank statements. Arithmetic, totals, and budget suggestions use deterministic rules.
 
 ---
 
